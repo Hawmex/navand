@@ -1,0 +1,6 @@
+name: navand
+publish_to: none
+environment:
+  sdk: ^3.0.1
+dev_dependencies:
+  lints: ^2.0.0
