@@ -1,8 +1,4 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
+/// Navand is a Dart web framework that lets developers create UIs with a widget
+/// model similar to Flutter. Navand apps are compiled into JS and painted with
+/// HTML & CSS.
 library;
-
-export 'src/navand_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
