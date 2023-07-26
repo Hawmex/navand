@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img alt="Navand" src="https://i.postimg.cc/Dv7zC1Gd/logo.png">
+  <img alt="Navand" src="https://raw.githubusercontent.com/Hawmex/Hawmex/main/navand_logo.png">
 </h1>
 
 Navand is a Dart web framework that lets developers create UIs with a widget
