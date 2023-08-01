@@ -8,7 +8,7 @@ HTML & CSS.
 
 [Repo](https://github.com/Hawmex/navand) |
 [Pub](https://pub.dev/packages/navand) |
-[API Reference](https://pub.dev/documentation/navand)
+[Docs](https://pub.dev/documentation/navand)
 
 </div>
 
