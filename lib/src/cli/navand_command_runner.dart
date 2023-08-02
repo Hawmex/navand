@@ -4,6 +4,7 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 
 import 'cli_message.dart';
+import 'commands/create_command.dart';
 import 'package_version.dart';
 
 final class NavandCommandRunner extends CommandRunner<int> {
@@ -14,6 +15,8 @@ final class NavandCommandRunner extends CommandRunner<int> {
       help: 'Print Navand version.',
       negatable: false,
     );
+
+    addCommand(CreateCommand());
   }
 
   @override
