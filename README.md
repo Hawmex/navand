@@ -8,6 +8,8 @@
 [Pub](https://pub.dev/packages/navand) |
 [Docs](https://pub.dev/documentation/navand) ]
 
+---
+
 </div>
 
 Navand, meaning "a swift horse" in Persian, is a Dart web framework that lets
