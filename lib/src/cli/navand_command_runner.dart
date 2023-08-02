@@ -20,15 +20,12 @@ final class NavandCommandRunner extends CommandRunner<int> {
   Future<int?> run(final Iterable<String> args) async {
     try {
       await super.run(args);
-
       return 0;
     } on UsageException catch (e) {
       print('${e.message}\n${e.usage}');
-
       return 1;
     } catch (e, st) {
       print('$e\n$st');
-
       return 1;
     }
   }
@@ -39,7 +36,6 @@ final class NavandCommandRunner extends CommandRunner<int> {
 
     if (shouldPrintVersion) {
       print(const CliMessage('Navand version: $packageVersion'));
-
       return 0;
     }
 
