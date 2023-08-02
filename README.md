@@ -2,7 +2,7 @@
 
 <h1><img alt="Navand" src="./assets/banner.svg"></h1>
 
-[ [Repo](https://github.com/Hawmex/navand) |
+[ [GitHub](https://github.com/Hawmex/navand) |
 [Pub](https://pub.dev/packages/navand) |
 [Docs](https://pub.dev/documentation/navand) ]
 
