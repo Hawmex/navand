@@ -10,7 +10,8 @@ abstract base class StatelessWidget extends Widget with Buildable {
 }
 
 /// A [Node] corresponding to [StatelessWidget].
-base class StatelessNode<T extends StatelessWidget> extends SingleChildNode<T> {
+final class StatelessNode<T extends StatelessWidget>
+    extends SingleChildNode<T> {
   /// Creates a new [StatelessNode].
   StatelessNode(super.widget);
 

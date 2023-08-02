@@ -1,0 +1,29 @@
+import '../core/build_context.dart';
+import 'stateful_widget.dart';
+import 'widget.dart';
+
+/// The type of the function that updates a [State].
+typedef StateSetter = void Function(void Function() callback);
+
+/// The type of the builder function used in a [StatefulBuilder].
+typedef StatefulWidgetBuilder = Widget Function(
+  BuildContext context,
+  StateSetter setState,
+);
+
+/// A widget that has a [State] and calls a closure to obtain its child
+/// widget.
+final class StatefulBuilder extends StatefulWidget {
+  final StatefulWidgetBuilder builder;
+
+  /// Creates a new [StatefulBuilder].
+  const StatefulBuilder(this.builder, {super.key, super.ref});
+
+  @override
+  State createState() => StatefulBuilderState();
+}
+
+final class StatefulBuilderState<T extends StatefulBuilder> extends State<T> {
+  @override
+  Widget build(final BuildContext context) => widget.builder(context, setState);
+}

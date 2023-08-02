@@ -50,7 +50,7 @@ abstract base class State<T extends StatefulWidget> extends Store
 }
 
 /// A [Node] corresponding to [StatefulWidget].
-base class StatefulNode<T extends StatefulWidget> extends SingleChildNode<T> {
+final class StatefulNode<T extends StatefulWidget> extends SingleChildNode<T> {
   late final State<T> state;
   late final StreamSubscription<void> _updateStreamSubscription;
 

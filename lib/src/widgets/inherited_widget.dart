@@ -18,7 +18,8 @@ abstract base class InheritedWidget extends Widget {
 }
 
 /// A [Node] corresponding to [InheritedWidget].
-base class InheritedNode<T extends InheritedWidget> extends SingleChildNode<T> {
+final class InheritedNode<T extends InheritedWidget>
+    extends SingleChildNode<T> {
   late final StreamController<void> _updateStreamController;
 
   /// Creates a new [InheritedNode].
