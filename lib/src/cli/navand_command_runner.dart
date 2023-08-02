@@ -3,8 +3,8 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 
-import '../core/package_version.dart';
 import 'cli_message.dart';
+import 'package_version.dart';
 
 final class NavandCommandRunner extends CommandRunner<int> {
   NavandCommandRunner()
