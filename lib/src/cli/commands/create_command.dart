@@ -22,13 +22,13 @@ final class CreateCommand extends Command<int> {
   @override
   int? run() {
     if (argResults!.rest.isEmpty) {
-      usageException('Please specify <app_name>.\n');
+      usageException('Please specify <app_name>.');
     }
 
     final directory = Directory('./$_appName');
 
     if (directory.existsSync()) {
-      usageException('Directory "$_appName" already exists.\n');
+      usageException('Directory "$_appName" already exists.');
     }
 
     Directory.current = directory..createSync();
@@ -117,7 +117,7 @@ final class CreateCommand extends Command<int> {
       ),
       onError: () => print(
         CliMessage(
-          'Failed to install $name. Run "pub get" after the setup.',
+          'Failed to install $name.',
           indentationLevel: 1,
           type: CliMessageType.error,
         ),
@@ -145,7 +145,7 @@ webdev serve
   String get _pubspecDotYaml => '''
 name: $_appName
 description: >
-  A Navand app
+  A Navand app.
 publish_to: none
 environment:
   sdk: ^3.0.1
@@ -181,7 +181,11 @@ analyzer:
 
     <title>$_appName</title>
 
-    <link rel="shortcut icon" href="/assets/icon.svg" type="image/x-icon" />
+    <link
+      rel="shortcut icon"
+      href="https://raw.githubusercontent.com/Hawmex/Hawmex/main/assets/icon.svg"
+      type="image/x-icon"
+    />
 
     <style>
       *,
@@ -198,7 +202,7 @@ analyzer:
   </head>
 
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>You need to enable JavaScript to run this app!</noscript>
   </body>
 </html>
 ''';
@@ -208,7 +212,7 @@ import 'package:navand/navand.dart';
 
 void main() => runApp(const App());
 
-class App extends StatelessWidget {
+final class App extends StatelessWidget {
   const App({super.key, super.ref});
 
   @override
@@ -216,7 +220,7 @@ class App extends StatelessWidget {
     return const Container(
       [
         Image(
-          'https://raw.githubusercontent.com/Hawmex/navand/main/assets/icon.svg',
+          'https://raw.githubusercontent.com/Hawmex/Hawmex/main/assets/icon.svg',
           style: Style({'width': '128px', 'height': '128px'}),
           animation: Animation(
             keyframes: [
@@ -236,7 +240,7 @@ class App extends StatelessWidget {
           ),
         ),
         Text(
-          'Welcome to Navand',
+          'Welcome to Navand!',
           style: Style({
             'font-size': '24px',
             'font-weight': 'bold',
@@ -249,7 +253,7 @@ class App extends StatelessWidget {
             'web/main.dart',
             style: Style({
               'font-family': 'monospace',
-              'background': '#eeeeee',
+              'background': '#212121',
               'border-radius': '4px',
               'padding': '4px',
             }),
@@ -267,8 +271,8 @@ class App extends StatelessWidget {
         'padding': '16px',
         'width': '100%',
         'min-height': '100vh',
-        'background': '#ffffff',
-        'color': '#000000',
+        'background': '#0d1117',
+        'color': '#ffffff',
         'font-family': 'system-ui',
         'user-select': 'none',
       }),

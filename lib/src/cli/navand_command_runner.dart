@@ -25,10 +25,10 @@ final class NavandCommandRunner extends CommandRunner<int> {
       await super.run(args);
       return 0;
     } on UsageException catch (e) {
-      print('${e.message}\n${e.usage}');
+      print('${e.message}\n\n${e.usage}');
       return 1;
     } catch (e, st) {
-      print('$e\n$st');
+      print('$e\n\n$st');
       return 1;
     }
   }

@@ -13,7 +13,7 @@ void runProcess(
 
   if (processResult.exitCode > 0) {
     if (onError != null) onError();
-    if (throwOnError) throw '\n${processResult.stdout}';
+    if (throwOnError) throw '${processResult.stdout}';
 
     print('\n${processResult.stdout}');
   } else if (onSuccess != null) {
