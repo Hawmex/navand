@@ -22,10 +22,11 @@ final class StreamBuilder<T> extends StatefulWidget {
   });
 
   @override
-  State createState() => StreamBuilderState<T, StreamBuilder<T>>();
+  State createState() => _StreamBuilderState<T, StreamBuilder<T>>();
 }
 
-final class StreamBuilderState<T, U extends StreamBuilder<T>> extends State<U> {
+final class _StreamBuilderState<T, U extends StreamBuilder<T>>
+    extends State<U> {
   StreamSubscription<T>? _subscription;
   late AsyncSnapshot<T> _snapshot;
 

@@ -20,10 +20,11 @@ final class FutureBuilder<T> extends StatefulWidget {
   });
 
   @override
-  State createState() => FutureBuilderState<T, FutureBuilder<T>>();
+  State createState() => _FutureBuilderState<T, FutureBuilder<T>>();
 }
 
-final class FutureBuilderState<T, U extends FutureBuilder<T>> extends State<U> {
+final class _FutureBuilderState<T, U extends FutureBuilder<T>>
+    extends State<U> {
   Object? _activeCallbackIdentity;
   late AsyncSnapshot<T> _snapshot;
 

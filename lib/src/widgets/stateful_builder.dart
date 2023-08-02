@@ -20,10 +20,10 @@ final class StatefulBuilder extends StatefulWidget {
   const StatefulBuilder(this.builder, {super.key, super.ref});
 
   @override
-  State createState() => StatefulBuilderState();
+  State createState() => _StatefulBuilderState();
 }
 
-final class StatefulBuilderState<T extends StatefulBuilder> extends State<T> {
+final class _StatefulBuilderState<T extends StatefulBuilder> extends State<T> {
   @override
   Widget build(final BuildContext context) => widget.builder(context, setState);
 }

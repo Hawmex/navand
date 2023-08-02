@@ -15,10 +15,10 @@ abstract base class ConsumerWidget<T extends Store> extends StatefulWidget {
   Widget build(final BuildContext context, final T store);
 
   @override
-  State createState() => ConsumerWidgetState<T, ConsumerWidget<T>>();
+  State createState() => _ConsumerWidgetState<T, ConsumerWidget<T>>();
 }
 
-final class ConsumerWidgetState<T extends Store, U extends ConsumerWidget<T>>
+final class _ConsumerWidgetState<T extends Store, U extends ConsumerWidget<T>>
     extends State<U> {
   late T _store;
   late StreamSubscription<void> _subscription;
