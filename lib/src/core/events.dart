@@ -16,7 +16,7 @@ final class EventDetails<T extends html.Event> {
   final Node _targetNode;
   final T _event;
 
-  /// Creates a new instance of [EventDetails].
+  /// Creates a new [EventDetails].
   const EventDetails(this._event, {required final Node targetNode})
       : _targetNode = targetNode;
 
@@ -57,7 +57,7 @@ typedef PointerEventCallback<T extends PointerEventDetails> = EventCallback<T>;
 
 /// The details of the fired pointer event.
 final class PointerEventDetails extends EventDetails<html.PointerEvent> {
-  /// Creates a new instance of [PointerEventDetails].
+  /// Creates a new [PointerEventDetails].
   const PointerEventDetails(super._event, {required super.targetNode});
 
   int get pointerId => _event.pointerId!;
