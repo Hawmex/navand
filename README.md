@@ -1,6 +1,8 @@
 <div align="center">
 
-<h1><img alt="Navand" src="./assets/banner.svg"></h1>
+<img alt="Navand" src="./assets/banner.svg" />
+
+---
 
 [ [GitHub](https://github.com/Hawmex/navand) |
 [Pub](https://pub.dev/packages/navand) |
