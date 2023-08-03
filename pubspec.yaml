@@ -1,23 +1,17 @@
 name: navand
-
 description: >
   Navand, meaning "a swift horse" in Persian, is a Dart web framework that lets
   developers create UIs with a widget model similar to Flutter. Navand apps are
   compiled into JS and painted with HTML & CSS.
-
 version: 0.1.0
 publish_to: none
 repository: https://github.com/Hawmex/navand
-
 executables:
   navand:
-
 environment:
   sdk: ^3.0.1
-
 dev_dependencies:
   lints: ^2.1.1
-
 dependencies:
   args: ^2.4.2
   js: ^0.6.7
