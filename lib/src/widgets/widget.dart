@@ -79,6 +79,10 @@ abstract base class Node<T extends Widget> {
   /// If [widget] is updated while this [Node] is present in the [Node] tree,
   /// [widgetWillUpdate] and [widgetDidUpdate] are called.
   set widget(final T newWidget) {
+    if (!_isActive) {
+      throw StateError('Cannot update the widget of an inactive node.');
+    }
+
     final oldWidget = widget;
 
     if (newWidget != oldWidget) {
@@ -113,8 +117,10 @@ abstract base class Node<T extends Widget> {
   ///
   /// *Flowing downwards*
   void initialize() {
-    widget.ref?._currentNode = this;
+    if (_isActive) throw StateError('Cannot initialize an active node');
+
     _isActive = true;
+    widget.ref?._currentNode = this;
   }
 
   /// Called right before the [widget] is updated. Use this to remove references
@@ -137,15 +143,16 @@ abstract base class Node<T extends Widget> {
   ///
   /// *Flowing upwards*
   void dispose() {
-    _isActive = false;
-
-    widget.ref?._currentNode = null;
+    if (!_isActive) throw StateError('Cannot dispose an inactive node.');
 
     for (final dependencySubscription in _dependencySubscriptions) {
       dependencySubscription.cancel();
     }
 
     _dependencySubscriptions.clear();
+
+    widget.ref?._currentNode = null;
+    _isActive = false;
   }
 }
 
