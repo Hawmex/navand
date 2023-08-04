@@ -4,7 +4,6 @@ description: >
   developers create UIs with a widget model similar to Flutter. Navand apps are
   compiled into JS and painted with HTML & CSS.
 version: 0.1.0
-publish_to: none
 repository: https://github.com/Hawmex/navand
 executables:
   navand:
