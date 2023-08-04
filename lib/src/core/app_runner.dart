@@ -1,5 +1,6 @@
 import 'package:js/js.dart';
 
+import '../navigator/back_event.dart';
 import '../widgets/widget.dart';
 
 @JS('__navandAppNode__')
@@ -17,6 +18,8 @@ void runApp(final Widget app) {
  |_| \_|\__,_| \_/ \__,_|_| |_|\__,_|
                                                        
 ''');
+
+  addBackEventScript();
 
   if (_appNode != null && app.matches(_appNode!.widget)) {
     _appNode!.widget = app;
