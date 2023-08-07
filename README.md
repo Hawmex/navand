@@ -19,8 +19,3 @@ compiled into JS and painted with HTML & CSS.
 - [Code of Conduct](./CODE_OF_CONDUCT.md)
 - [Contributing to Navand](./CONTRIBUTING.md)
 - [Changelog](./CHANGELOG.md)
-
-## License
-
-Navand by Hamed Araab is licensed under CC BY 4.0. To view a copy of this
-license, visit http://creativecommons.org/licenses/by/4.0/
