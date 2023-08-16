@@ -150,7 +150,7 @@ Navigator.pushModal(
 );
 ```
 
-## Animations
+## Navand's Animations
 
 Navand's animations are very similar to CSS's and JavaScript's. They are
 applied to widgets once the have mounted in the node tree.
