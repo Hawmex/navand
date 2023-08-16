@@ -41,8 +41,8 @@ final class ImageNode extends ChildlessPaintedNode<Image, html.ImageElement> {
   ImageNode(super.widget) : super(element: html.ImageElement());
 
   @override
-  void initializeElement() {
-    super.initializeElement();
+  void assembleElement() {
+    super.assembleElement();
 
     addEventSubscription(
       type: 'error',

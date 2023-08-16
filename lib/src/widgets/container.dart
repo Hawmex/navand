@@ -43,8 +43,8 @@ final class ContainerNode
   List<Widget> get childWidgets => widget.children;
 
   @override
-  void initializeElement() {
-    super.initializeElement();
+  void assembleElement() {
+    super.assembleElement();
 
     addEventSubscription(
       type: 'scroll',

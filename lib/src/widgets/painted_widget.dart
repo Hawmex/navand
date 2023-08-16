@@ -69,7 +69,7 @@ base mixin PaintedNode<T extends PaintedWidget, U extends html.Element>
 
   /// Called when this [Node] is added to the tree or after the [widget] is
   /// updated.
-  void initializeElement() {
+  void assembleElement() {
     addEventSubscription(
       type: 'click',
       callback: widget.onTap,
@@ -160,7 +160,7 @@ base mixin PaintedNode<T extends PaintedWidget, U extends html.Element>
 
   /// Called before the [widget] is updated or when this [Node] is removed from
   /// the tree.
-  void disposeElement() {
+  void disassembleElement() {
     for (final eventSubscription in _eventSubscriptions) {
       eventSubscription.cancel();
     }
@@ -200,27 +200,27 @@ base mixin PaintedNode<T extends PaintedWidget, U extends html.Element>
       }
     }
 
-    initializeElement();
+    assembleElement();
 
     _animation = widget.animation?.runOnElement(element);
   }
 
   @override
   void widgetWillUpdate(final T newWidget) {
-    disposeElement();
+    disassembleElement();
     super.widgetWillUpdate(newWidget);
   }
 
   @override
   void widgetDidUpdate(final T oldWidget) {
     super.widgetDidUpdate(oldWidget);
-    initializeElement();
+    assembleElement();
   }
 
   @override
   void dispose() {
     _animation?.cancel();
-    disposeElement();
+    disassembleElement();
     element.remove();
     super.dispose();
   }

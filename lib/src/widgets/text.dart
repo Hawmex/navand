@@ -35,8 +35,8 @@ final class TextNode extends ChildlessPaintedNode<Text, html.SpanElement> {
   TextNode(super.widget) : super(element: html.SpanElement());
 
   @override
-  void initializeElement() {
-    super.initializeElement();
+  void assembleElement() {
+    super.assembleElement();
     element.text = widget.value;
   }
 }
