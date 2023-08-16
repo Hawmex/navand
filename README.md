@@ -48,9 +48,7 @@ Head to the directory in which you want to set up your application and run:
 navand create my_first_navand_app
 ```
 
-**NOTE:**
-
-You should pass just the app name to `navand create`. Arguments like
+**NOTE:** You should pass just the app name to `navand create`. Arguments like
 `path/to/my_new_navand_app` are not supported.
 
 ### Serve Your App
@@ -74,6 +72,8 @@ To build your app, run:
 ```
 webdev build
 ```
+
+The output can be found in `build/`.
 
 ## Navand's Navigator
 
@@ -107,19 +107,19 @@ It also has the following concepts:
 ```dart
 Navigator(
   routes: [
-    // Redirects
+    // Redirects are supported through `redirector`.
     Route(path: '', redirector: (final context, final state) => 'home'),
     Route(
       path: 'home',
       builder: (final context, final state) => const Text('Home'),
-      // Nested Routes
+      // Routes can be nested.
       routes: [
         Route(
           path: 'notifications',
           builder: (final context, final state) => const Text('Notifications'),
           routes: [
             Route(
-              // Dynamic routes
+              // Routes can be defined as dynamic.
               path: ':id',
               builder: (final context, final state) =>
                   Text('Notification ID: ${state.params['id']}'),
@@ -133,7 +133,7 @@ Navigator(
       builder: (final context, final state) => const Text('About'),
     ),
     Route(
-      // Wildcards
+      // Wildcards can be used in different cases like "Not Found" pages.
       path: '*',
       builder: (final context, final state) => const Text('Not Found'),
     ),
@@ -144,13 +144,13 @@ Navigator(
 #### Navigating
 
 ```dart
-// Popping the latest modal or the latest route
+// Popping the latest modal or the latest route.
 Navigator.pop();
 
-// Pushing a new route
+// Pushing a new route.
 Navigator.pushRoute('/about');
 
-// Replacing the current route
+// Replacing the current route.
 Navigator.replaceRoute('/about');
 
 // Pushing a new modal
@@ -171,7 +171,7 @@ applied to widgets once the have mounted in the node tree.
 #### Simple Animations
 
 ```dart
-// Animating a widget once it mounts
+// Animating a widget once it mounts.
 const Text(
   'Hello World!',
   animation: Animation(
@@ -231,7 +231,11 @@ your own widgets that paint specific HTML elements.
 
 ### Examples
 
+#### Custom Heading
+
 ```dart
+// Let's create an `H1` widget that paints an `<h1 />` element on the screen.
+
 final class H1 extends PaintedWidget {
   final String value;
 
@@ -252,16 +256,20 @@ final class H1 extends PaintedWidget {
     super.ref,
   });
 
+  // Create a corresponding node.
   @override
   H1Node createNode() => H1Node(this);
 }
 
 final class H1Node extends ChildlessPaintedNode<Text, html.HeadingElement> {
+  // Pass `html.HeadingElement.h1()` as its element.
   H1Node(super.widget) : super(element: html.HeadingElement.h1());
 
   @override
-  void initializeElement() {
-    super.initializeElement();
+  void assembleElement() {
+    super.assembleElement();
+
+    // Set the text of the element to the widget's value.
     element.text = widget.value;
   }
 }
