@@ -100,6 +100,16 @@ It also has the following concepts:
   latest modal, and if there are no modals left, the latest route should be
   popped.
 
+### Route Types
+
+- Wildcard (`*`)
+- Dynamic (`:<parameterName>`)
+- Static (`<segment-name>`)
+
+**NOTE:** You should follow the exact naming conventions mentioned above.
+Route paths such as `:lat-:long`, `comment-:id`, and `first/second/third` are
+not supported. Look at the following examples for nested routes.
+
 ### Examples
 
 #### Defining Routes
@@ -233,9 +243,9 @@ your own widgets that paint specific HTML elements.
 
 #### Custom Heading
 
-```dart
-// Let's create an `H1` widget that paints an `<h1 />` element on the screen.
+Let's create an `H1` widget that paints an `<h1 />` element on the screen.
 
+```dart
 final class H1 extends PaintedWidget {
   final String value;
 
