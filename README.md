@@ -92,10 +92,10 @@ entities:
 
 It also has the following concepts:
 
-- Only a single instance of `Navigator` should be used in the app.
-- Because modals should be accessible only through user action or the flow of
-  the application, browser's forward button should disabled (the same way most
-  modern native apps don't have one).
+- Only a single instance of `Navigator` should be created in the app.
+- Because modals should be accessible only through users' actions or the flow
+  of the application, browser's forward button should disabled (in the same way
+  that most modern native apps don't have one).
 - When browser's back button is pressed or `Navigator.pop` is called, the
   latest modal, and if there are no modals left, the latest route should be
   popped.
@@ -107,19 +107,25 @@ It also has the following concepts:
 ```dart
 Navigator(
   routes: [
-    Route('', redirector: (final context, final state) => 'home'),
+    Route(path: '', redirector: (final context, final state) => 'home'),
     Route(
-      'home',
-      builder: (final context, final state) => Text('Home'),
+      path: 'home',
+      builder: (final context, final state) => const Text('Home'),
       routes: [
         Route(
-          'notifications'
-          builder: (final context, final state) => Text('Notifications'),
+          path: 'notifications',
+          builder: (final context, final state) => const Text('Notifications'),
         ),
       ],
     ),
-    Route('about', builder: (final context, final state) => Text('About')),
-    Route('*', builder: (final context, final state) => Text('Not Found')),
+    Route(
+      path: 'about',
+      builder: (final context, final state) => const Text('About'),
+    ),
+    Route(
+      path: '*',
+      builder: (final context, final state) => const Text('Not Found'),
+    ),
   ],
 );
 ```
@@ -152,6 +158,21 @@ applied to widgets once the have mounted in the node tree.
 ### Example
 
 ```dart
+// Animating a widget after it mounts
+const Text(
+  'Hello World!',
+  animation: Animation(
+    keyframes: [
+      Keyframe(offset: 0, style: Style({'color': 'red'})),
+      Keyframe(offset: 0.5, style: Style({'color': 'green'})),
+      Keyframe(offset: 1, style: Style({'color': 'blue'})),
+    ],
+    duration: Duration(milliseconds: 500),
+    easing: Easing(0.4, 0, 0.2, 1),
+  ),
+);
+
+// Infinite animations
 const Text(
   'Hello World!',
   animation: Animation(
@@ -163,6 +184,22 @@ const Text(
     duration: Duration(milliseconds: 500),
     easing: Easing(0.4, 0, 0.2, 1),
     iterations: double.infinity,
+  ),
+);
+
+// To animate the following widget every time `name` is updated,
+// pass a key to it that serializes `name`.
+Text(
+  'Hello $name',
+  key: name.toString(),
+  animation: Animation(
+    keyframes: [
+      Keyframe(offset: 0, style: Style({'color': 'red'})),
+      Keyframe(offset: 0.5, style: Style({'color': 'green'})),
+      Keyframe(offset: 1, style: Style({'color': 'blue'})),
+    ],
+    duration: Duration(milliseconds: 500),
+    easing: Easing(0.4, 0, 0.2, 1),
   ),
 );
 ```
