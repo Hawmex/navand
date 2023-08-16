@@ -155,10 +155,12 @@ Navigator.pushModal(
 Navand's animations are very similar to CSS's and JavaScript's. They are
 applied to widgets once the have mounted in the node tree.
 
-### Example
+### Examples
+
+#### Simple Animations
 
 ```dart
-// Animating a widget after it mounts
+// Animating a widget once it mounts
 const Text(
   'Hello World!',
   animation: Animation(
@@ -171,8 +173,11 @@ const Text(
     easing: Easing(0.4, 0, 0.2, 1),
   ),
 );
+```
 
-// Infinite animations
+#### Infinite Animations
+
+```dart
 const Text(
   'Hello World!',
   animation: Animation(
@@ -186,7 +191,11 @@ const Text(
     iterations: double.infinity,
   ),
 );
+```
 
+#### Animations on Updates
+
+```dart
 // To animate the following widget every time `name` is updated,
 // pass a key to it that serializes `name`.
 Text(
