@@ -107,14 +107,24 @@ It also has the following concepts:
 ```dart
 Navigator(
   routes: [
+    // Redirects
     Route(path: '', redirector: (final context, final state) => 'home'),
     Route(
       path: 'home',
       builder: (final context, final state) => const Text('Home'),
+      // Nested Routes
       routes: [
         Route(
           path: 'notifications',
           builder: (final context, final state) => const Text('Notifications'),
+          routes: [
+            Route(
+              // Dynamic routes
+              path: ':id',
+              builder: (final context, final state) =>
+                  Text('Notification ID: ${state.params['id']}'),
+            ),
+          ],
         ),
       ],
     ),
@@ -123,6 +133,7 @@ Navigator(
       builder: (final context, final state) => const Text('About'),
     ),
     Route(
+      // Wildcards
       path: '*',
       builder: (final context, final state) => const Text('Not Found'),
     ),
@@ -211,4 +222,47 @@ Text(
     easing: Easing(0.4, 0, 0.2, 1),
   ),
 );
+```
+
+## Extending the API
+
+Navand's API is extensible in many aspects. For example, you can easily create
+your own widgets that paint specific HTML elements.
+
+### Examples
+
+```dart
+final class H1 extends PaintedWidget {
+  final String value;
+
+  const H1(
+    this.value, {
+    super.style,
+    super.animation,
+    super.onTap,
+    super.onPointerDown,
+    super.onPointerUp,
+    super.onPointerEnter,
+    super.onPointerLeave,
+    super.onPointerMove,
+    super.onPointerCancel,
+    super.onPointerOver,
+    super.onPointerOut,
+    super.key,
+    super.ref,
+  });
+
+  @override
+  H1Node createNode() => H1Node(this);
+}
+
+final class H1Node extends ChildlessPaintedNode<Text, html.HeadingElement> {
+  H1Node(super.widget) : super(element: html.HeadingElement.h1());
+
+  @override
+  void initializeElement() {
+    super.initializeElement();
+    element.text = widget.value;
+  }
+}
 ```
