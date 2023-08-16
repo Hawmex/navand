@@ -1,3 +1,7 @@
+## 0.2.1
+
+- Moved the docs in `README.md` to Navand's wiki.
+
 ## 0.2.0
 
 - Updated applications template.
