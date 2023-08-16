@@ -65,6 +65,12 @@ And serve it:
 webdev serve
 ```
 
+**NOTE:** Activate `webdev` globally if you haven't already.
+
+```
+dart pub global activate webdev
+```
+
 ### Build Your App
 
 To build your app, run:
