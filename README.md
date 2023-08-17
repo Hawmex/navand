@@ -17,9 +17,9 @@
 
 </div>
 
-Navand, meaning "a swift horse" in Persian, is a web framework in Dart that
-lets developers create UIs with a widget model similar to Flutter. Navand apps
-are compiled into JS and painted using HTML & CSS.
+Navand, meaning "a swift horse" in Persian, is a web framework in Dart that lets
+developers create UIs with a widget model similar to Flutter. Navand apps are
+compiled into JS and painted using HTML & CSS.
 
 - [Code of Conduct](./CODE_OF_CONDUCT.md)
 - [Contributing to Navand](./CONTRIBUTING.md)
