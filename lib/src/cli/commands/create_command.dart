@@ -187,8 +187,9 @@ analyzer:
       type="image/x-icon"
     />
 
-    <!-- You can apply global styles here. -->
     <style>
+      /* You can apply global styles here. */
+
       *,
       *::before,
       *::after {
