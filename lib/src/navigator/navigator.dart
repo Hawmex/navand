@@ -18,17 +18,24 @@ final class Navigator extends StatefulWidget {
   static _NavigatorState? _state;
 
   /// Replaces the current route.
-  static void replaceRoute(final String path) => _state!._replaceRoute(path);
+  static void replaceRoute(final String path) {
+    _state!._replaceRoute(path);
+  }
 
   /// Pops all modals and pushes a new route.
-  static void pushRoute(final String path) => _state!._pushRoute(path);
+  static void pushRoute(final String path) {
+    _state!._pushRoute(path);
+  }
 
   /// Pushes a new modal.
-  static void pushModal({required final void Function() onPop}) =>
-      _state!._pushModal(onPop: onPop);
+  static void pushModal({required final void Function() onPop}) {
+    _state!._pushModal(onPop: onPop);
+  }
 
   /// Pops the latest modal. If no modal is open, the current route is popped.
-  static void pop() => _state!._pop();
+  static void pop() {
+    _state!._pop();
+  }
 
   final List<Route> routes;
 
@@ -116,10 +123,13 @@ final class _NavigatorState extends State<Navigator> {
     }
   }
 
-  void _popModalPoppers() => _modalPoppers.removeLast()();
+  void _popModalPoppers() {
+    _modalPoppers.removeLast()();
+  }
 
   void _addModalPopper(final void Function() popper) {
     _pushHistory();
+
     _modalPoppers.add(popper);
   }
 
@@ -143,19 +153,24 @@ final class _NavigatorState extends State<Navigator> {
     );
   }
 
-  void _replaceHistory(final String path) async {
-    if (_routeEntries.isNotEmpty) await _popRouteEntries();
+  void _replaceHistory(final String path) {
+    _popAllModalPoppers();
 
-    html.window.history.replaceState(null, '', path);
+    // TODO@Hawmex
+    Timer(const Duration(milliseconds: 16), () async {
+      if (_routeEntries.isNotEmpty) await _popRouteEntries();
 
-    _addRouteEntry();
+      html.window.history.pushState(null, '', path);
+
+      _addRouteEntry();
+    });
   }
 
   void _pushHistory({final String? path}) {
     if (path != null) {
       _popAllModalPoppers();
 
-      // TODO@Hawmex: Fix calling `history.pushState` after `history.back`
+      // TODO@Hawmex
       Timer(const Duration(milliseconds: 16), () {
         html.window.history.pushState(null, '', path);
 
@@ -166,14 +181,21 @@ final class _NavigatorState extends State<Navigator> {
     }
   }
 
-  void _pop() => html.window.history.back();
+  void _pop() {
+    html.window.history.back();
+  }
 
-  void _replaceRoute(final String path) => _replaceHistory(path);
+  void _replaceRoute(final String path) {
+    _replaceHistory(path);
+  }
 
-  void _pushRoute(final String path) => _pushHistory(path: path);
+  void _pushRoute(final String path) {
+    _pushHistory(path: path);
+  }
 
-  void _pushModal({required final void Function() onPop}) =>
-      _addModalPopper(onPop);
+  void _pushModal({required final void Function() onPop}) {
+    _addModalPopper(onPop);
+  }
 
   void _historyBackHandler() {
     if (_modalPoppers.isNotEmpty) {

@@ -60,11 +60,12 @@ final class AsyncSnapshot<T> {
 
   /// Returns a copy of the current [AsyncSnapshot] with the given
   /// [connectionState].
-  AsyncSnapshot<T> inConnectionState(final ConnectionState connectionState) =>
-      AsyncSnapshot._(
-        connectionState: connectionState,
-        data: data,
-        error: error,
-        stackTrace: stackTrace,
-      );
+  AsyncSnapshot<T> inConnectionState(final ConnectionState connectionState) {
+    return AsyncSnapshot._(
+      connectionState: connectionState,
+      data: data,
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
 }
