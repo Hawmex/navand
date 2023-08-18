@@ -1,3 +1,10 @@
+## 0.2.2
+
+- Internal improvements like formatting, etc.
+- Improved applications template.
+- Improved docs.
+- Fixed typos in docs.
+
 ## 0.2.1
 
 - Moved the docs in `README.md` to Navand's wiki.
