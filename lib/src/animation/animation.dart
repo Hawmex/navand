@@ -9,7 +9,7 @@ import 'keyframe.dart';
 /// This class can be used to add animations to a [PaintedWidget].
 ///
 /// The properties of this class is almost identical to `animate()`'s parameters
-/// in JavaScript. Though some naming conventions are different.
+/// in JavaScript. Though, some naming conventions are different.
 final class Animation {
   final List<Keyframe> keyframes;
   final Duration duration;

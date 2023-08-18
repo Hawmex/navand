@@ -10,7 +10,7 @@ import '../widgets/widget.dart';
 import 'route.dart';
 import 'route_state.dart';
 
-/// A navigation outlet.
+/// The navigation outlet of a Navand app.
 ///
 /// **Notice:** Only a single instance of [Navigator] should be present in an
 /// app.
@@ -166,7 +166,7 @@ final class _NavigatorState extends State<Navigator> {
     });
   }
 
-  void _pushHistory({final String? path}) {
+  void _pushHistory([final String? path]) {
     if (path != null) {
       _popAllModalPoppers();
 
@@ -190,7 +190,7 @@ final class _NavigatorState extends State<Navigator> {
   }
 
   void _pushRoute(final String path) {
-    _pushHistory(path: path);
+    _pushHistory(path);
   }
 
   void _pushModal({required final void Function() onPop}) {
