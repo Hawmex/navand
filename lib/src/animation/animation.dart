@@ -7,6 +7,9 @@ import 'easing.dart';
 import 'keyframe.dart';
 
 /// This class can be used to add animations to a [PaintedWidget].
+///
+/// The properties of this class is almost identical to `animate()`'s parameters
+/// in JavaScript. Though some naming conventions are different.
 final class Animation {
   final List<Keyframe> keyframes;
   final Duration duration;
@@ -29,7 +32,8 @@ final class Animation {
     this.iterations = 1,
   });
 
-  /// Runs this animation on the given [element].
+  /// Runs this animation on the given [element] and returns the
+  /// [html.Animation] object.
   html.Animation runOnElement(final html.Element element) {
     return element.animate(
       keyframes.map((final keyframe) => keyframe.toMap()),

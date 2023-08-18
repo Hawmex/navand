@@ -7,6 +7,10 @@ import '../widgets/widget.dart';
 external Node? _appNode;
 
 /// Attaches the given [app] to the document's body by initializing it.
+///
+/// Note that supporting stateful hot-reload is considered necessary, but this
+/// feature has been blocked by Dart's limitations. See
+/// https://github.com/flutter/flutter/issues/53041
 void runApp(final Widget app) {
   // ignore: avoid_print
   print(r'''

@@ -27,7 +27,7 @@ abstract base class Widget {
       runtimeType == otherWidget.runtimeType && key == otherWidget.key;
 }
 
-/// Similar to ref in React and GlobalKey in Flutter.
+/// Similar to `ref` in React and `GlobalKey` in Flutter.
 final class Ref {
   Node? _currentNode;
 

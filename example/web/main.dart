@@ -8,8 +8,10 @@ final class App extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
+    // You can use `Container` to wrap multiple widgets.
     return const Container(
       [Logo(), Greeting()],
+      // You can use `Style` to style your painted widgets.
       style: Style({
         'display': 'flex',
         'flex-flow': 'column',
@@ -37,6 +39,7 @@ final class Logo extends StatelessWidget {
     return const Image(
       'https://raw.githubusercontent.com/Hawmex/Hawmex/main/assets/icon.svg',
       style: Style({'width': '128px', 'height': '128px'}),
+      // You can use `Animation` to add animation to widgets.
       animation: Animation(
         keyframes: [
           Keyframe(offset: 0, style: Style({'transform': 'translateY(0px)'})),

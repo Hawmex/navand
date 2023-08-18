@@ -1,4 +1,11 @@
 /// An implementation of the `cubic-bezier` curves.
+///
+/// Note that [Easing] includes five static properties:
+/// - [linear]
+/// - [ease]
+/// - [easeIn]
+/// - [easeOut]
+/// - [easeInOut]
 final class Easing {
   static const linear = Easing(0, 0, 1, 1);
   static const ease = Easing(0.25, 0.1, 0.25, 1);
