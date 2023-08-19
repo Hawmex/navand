@@ -1,7 +1,7 @@
 # Code of Conduct
 
-- Contributors are expected to act professionally.
-- Contributors are expected to respect individuals.
+- Contributors should to act professionally.
+- Contributors should respect individuals.
 - Contributors are free to challenge ideas.
-- Contributors are expected to maintain the safety and dignity of Navand's
-  social environments such as GitHub.
+- Contributors should to maintain the safety and dignity of Navand's social
+  environments like GitHub.
