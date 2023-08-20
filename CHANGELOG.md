@@ -7,7 +7,7 @@
 
 ## 0.2.1
 
-- Moved the documentation in `README.md` to Navand's wiki.
+- Moved the documentation from `README.md` to Navand's wiki.
 
 ## 0.2.0
 
