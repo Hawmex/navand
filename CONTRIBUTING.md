@@ -7,7 +7,7 @@ This repository follows the _Semantic Versioning 2.0.0_ specification.
 ## Preferences
 
 Please do not modify `.gitignore`, `analysis_options.yaml`, and such files. Use
-the current settings. Open an issue if you feel these think need to be updated.
+the current settings. Open an issue if you think these files need to be updated.
 
 ## Coding Style
 
