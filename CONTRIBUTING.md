@@ -23,7 +23,7 @@ commit messages.
 
 ## Pull Requests
 
-- Contributors must avoid adding pull requests with no prior discussion and a
+- Contributors must avoid adding pull requests with no prior discussion and
   positive feedback in a corresponding issue.
 - There is no guarantee that all pull requests meeting the contribution
   guidelines will be approved and merged.
