@@ -18,30 +18,30 @@ final class Navigator extends StatefulWidget {
   static _NavigatorState? _state;
 
   /// Replaces the current route.
-  static void replaceRoute(final String path) {
-    _state!._replaceRoute(path);
+  static Future<void> replaceRoute(final String path) async {
+    await _state!._replaceRoute(path);
   }
 
   /// Pops all modals and pushes a new route.
-  static void pushRoute(final String path) {
-    _state!._pushRoute(path);
+  static Future<void> pushRoute(final String path) async {
+    await _state!._pushRoute(path);
   }
 
   /// Pushes a new modal.
-  static void pushModal({required final void Function() onPop}) {
-    _state!._pushModal(onPop: onPop);
+  static Future<void> pushModal({required final void Function() onPop}) async {
+    await _state!._pushModal(onPop: onPop);
   }
 
   /// Pops the latest modal. If no modal is open, the current route is popped.
-  static void pop() {
-    _state!._pop();
+  static Future<void> pop() async {
+    await _state!._pop();
   }
 
   final List<Route> routes;
 
   /// The animation that should be applied to the latest route after it's been
   /// replaced or pushed.
-  final Animation? replaceOrPushAnimation;
+  final Animation? pushAnimation;
 
   /// The animation that should be applied to the latest route after it's been
   /// popped.
@@ -50,7 +50,7 @@ final class Navigator extends StatefulWidget {
   /// Creates a new [Navigator].
   const Navigator({
     required this.routes,
-    this.replaceOrPushAnimation,
+    this.pushAnimation,
     this.popAnimation,
     super.key,
     super.ref,
@@ -61,22 +61,25 @@ final class Navigator extends StatefulWidget {
 }
 
 final class _RouteEntry {
-  final Widget widget;
-  final Ref ref;
+  final _ref = Ref();
 
-  late final Widget wrappedWidget = Container(
+  late final Widget _wrappedWidget = Container(
     [widget],
-    ref: ref,
-    style: const Style({
+    ref: _ref,
+    style: Style({
       'position': 'absolute',
       'left': '0px',
       'top': '0px',
       'width': '100%',
       'height': '100%',
+      if (!visible) 'visibility': 'hidden',
     }),
   );
 
-  _RouteEntry({required this.widget, required this.ref});
+  final Widget widget;
+  final bool visible;
+
+  _RouteEntry(this.widget, {this.visible = true});
 }
 
 final class _NavigatorState extends State<Navigator> {
@@ -113,13 +116,26 @@ final class _NavigatorState extends State<Navigator> {
   final _modalPoppers = <void Function()>[];
   final _routeEntries = <_RouteEntry>[];
 
+  bool _waitForPop = false;
+
+  late final StreamController<void> _popWaiter;
   late final StreamSubscription<html.Event> _historyBackSubscription;
 
-  void _popAllModalPoppers() {
+  Future<void> get _animationFrame async {
+    final controller = StreamController<void>.broadcast();
+
+    Timer(const Duration(milliseconds: 16), () {
+      controller.add(null);
+    });
+
+    await controller.stream.first;
+  }
+
+  Future<void> _popAllModalPoppers() async {
     final n = _modalPoppers.length;
 
     for (int i = 0; i < n; i++) {
-      _pop();
+      await _pop();
     }
   }
 
@@ -127,81 +143,111 @@ final class _NavigatorState extends State<Navigator> {
     _modalPoppers.removeLast()();
   }
 
-  void _addModalPopper(final void Function() popper) {
-    _pushHistory();
+  Future<void> _addModalPopper(final void Function() popper) async {
+    await _pushHistory();
 
     _modalPoppers.add(popper);
   }
 
   Future<void> _popRouteEntries() async {
-    final lastRouteElement = _routeEntries.removeLast().ref.currentElement!;
+    final lastRouteElement = _routeEntries.removeLast()._ref.currentElement!;
 
     await widget.popAnimation?.runOnElement(lastRouteElement).finished;
 
     setState(() {});
   }
 
-  void _addRouteEntry() {
-    _routeEntries.add(_RouteEntry(widget: _build(context), ref: Ref()));
+  Future<void> _addRouteEntry() async {
+    final routeEntry = _RouteEntry(_build(context), visible: false);
+
+    _routeEntries.add(routeEntry);
 
     setState(() {});
 
-    html.window.requestAnimationFrame(
-      (final highResTime) => widget.replaceOrPushAnimation?.runOnElement(
-        _routeEntries.last.ref.currentElement!,
-      ),
-    );
+    await _animationFrame;
+
+    final routeElement = routeEntry._ref.currentElement!
+      ..style.visibility = 'visible';
+
+    await widget.pushAnimation?.runOnElement(routeElement).finished;
   }
 
-  void _replaceHistory(final String path) {
-    _popAllModalPoppers();
+  Future<void> _replaceRouteEntry() async {
+    if (_routeEntries.isNotEmpty) _routeEntries.removeLast();
 
-    // TODO@Hawmex
-    Timer(const Duration(milliseconds: 16), () async {
-      if (_routeEntries.isNotEmpty) await _popRouteEntries();
+    final routeEntry = _RouteEntry(_build(context));
+
+    _routeEntries.add(routeEntry);
+
+    setState(() {});
+  }
+
+  Future<void> _replaceHistory(final String path) async {
+    await _popAllModalPoppers();
+
+    html.window.history.replaceState(null, '', path);
+
+    await _animationFrame;
+
+    await _replaceRouteEntry();
+  }
+
+  Future<void> _pushHistory([final String? path]) async {
+    if (path != null) {
+      await _popAllModalPoppers();
 
       html.window.history.pushState(null, '', path);
 
-      _addRouteEntry();
-    });
-  }
+      await _animationFrame;
 
-  void _pushHistory([final String? path]) {
-    if (path != null) {
-      _popAllModalPoppers();
-
-      // TODO@Hawmex
-      Timer(const Duration(milliseconds: 16), () {
-        html.window.history.pushState(null, '', path);
-
-        _addRouteEntry();
-      });
+      await _addRouteEntry();
     } else {
       html.window.history.pushState(null, '', null);
+
+      await _animationFrame;
     }
   }
 
-  void _pop() {
+  Future<void> _pop() async {
+    _waitForPop = true;
+
     html.window.history.back();
+
+    final controller = StreamController<void>.broadcast();
+
+    late final StreamSubscription<void> subscription;
+
+    subscription = _popWaiter.stream.listen((final event) {
+      controller.add(null);
+      subscription.cancel();
+    });
+
+    await controller.stream.first;
   }
 
-  void _replaceRoute(final String path) {
-    _replaceHistory(path);
+  Future<void> _replaceRoute(final String path) async {
+    await _replaceHistory(path);
   }
 
-  void _pushRoute(final String path) {
-    _pushHistory(path);
+  Future<void> _pushRoute(final String path) async {
+    await _pushHistory(path);
   }
 
-  void _pushModal({required final void Function() onPop}) {
-    _addModalPopper(onPop);
+  Future<void> _pushModal({required final void Function() onPop}) async {
+    await _addModalPopper(onPop);
   }
 
-  void _historyBackHandler() {
+  void _historyBackHandler() async {
     if (_modalPoppers.isNotEmpty) {
       _popModalPoppers();
     } else {
-      _popRouteEntries();
+      await _popRouteEntries();
+    }
+
+    if (_waitForPop) {
+      _waitForPop = false;
+
+      _popWaiter.add(null);
     }
   }
 
@@ -213,6 +259,8 @@ final class _NavigatorState extends State<Navigator> {
 
     _replaceHistory(html.window.location.pathname!);
 
+    _popWaiter = StreamController.broadcast();
+
     _historyBackSubscription = html.window.on['__navand-navigator-back__']
         .listen((final event) => _historyBackHandler());
   }
@@ -220,6 +268,7 @@ final class _NavigatorState extends State<Navigator> {
   @override
   void dispose() {
     _historyBackSubscription.cancel();
+    _popWaiter.close();
 
     Navigator._state = null;
 
@@ -265,7 +314,7 @@ final class _NavigatorState extends State<Navigator> {
   @override
   Widget build(final BuildContext context) {
     return Container(
-      [for (final routeEntry in _routeEntries) routeEntry.wrappedWidget],
+      [for (final routeEntry in _routeEntries) routeEntry._wrappedWidget],
       style: const Style({'position': 'relative'}),
     );
   }
