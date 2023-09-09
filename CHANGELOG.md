@@ -1,3 +1,12 @@
+## 0.3.0
+
+- Fixed the unexpected behaviors of the Navigation API.
+- Removed unnecessary errors thrown at runtime.
+
+### Breaking Changes
+
+- Changed sync Navigation functions to async functions.
+
 ## 0.2.2
 
 - Improved formatting.
