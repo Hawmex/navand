@@ -79,10 +79,6 @@ abstract base class Node<T extends Widget> {
   /// If [widget] is updated while this [Node] is present in the [Node] tree,
   /// [widgetWillUpdate] and [widgetDidUpdate] are called.
   set widget(final T newWidget) {
-    if (!_isActive) {
-      throw StateError('Cannot update the widget of an inactive node.');
-    }
-
     final oldWidget = widget;
 
     if (newWidget != oldWidget) {

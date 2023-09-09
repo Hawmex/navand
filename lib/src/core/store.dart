@@ -7,20 +7,14 @@ abstract base class Store {
 
   /// Notifies the listeners.
   void setState(final void Function() callback) {
-    if (!_isActive) {
-      throw StateError('Cannot call setState on an inactive store.');
-    }
-
     callback();
-    _updateController.add(null);
+
+    if (_isActive) _updateController.add(null);
   }
 
   /// Listens to this [Store] for notifications.
-  StreamSubscription<void> listen(final void Function() onUpdate) {
-    if (!_isActive) throw StateError('Cannot listen to an inactive store.');
-
-    return _updateController.stream.listen((final event) => onUpdate());
-  }
+  StreamSubscription<void> listen(final void Function() onUpdate) =>
+      _updateController.stream.listen((final event) => onUpdate());
 
   /// Initializes this [Store].
   void initialize() {
