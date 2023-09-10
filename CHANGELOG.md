@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Fixed inconsistencies in the behavior of `Navigator`.
+
 ## 0.3.0
 
 - Fixed the unexpected behaviors of the Navigation API.
