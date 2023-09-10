@@ -90,11 +90,12 @@ final class _NavigatorState extends State<Navigator> {
   }) {
     if (route.variant == RouteVariant.wildcard) return route;
 
-    if (route.variant == RouteVariant.dynamic) {
+    if (route.variant == RouteVariant.dynamic && segments.isNotEmpty) {
       params[route.path.substring(1)] = segments.first;
     }
 
-    if (route.variant == RouteVariant.static && route.path != segments.first) {
+    if (route.variant == RouteVariant.static &&
+        route.path != (segments.firstOrNull ?? '')) {
       return null;
     }
 
@@ -257,7 +258,7 @@ final class _NavigatorState extends State<Navigator> {
 
     Navigator._state = this;
 
-    _replaceHistory(html.window.location.pathname!);
+    _replaceHistory(html.window.location.href);
 
     _popWaiter = StreamController.broadcast();
 
@@ -277,13 +278,12 @@ final class _NavigatorState extends State<Navigator> {
 
   Widget _build(final BuildContext context) {
     final url = Uri.parse(html.window.location.href);
-    final segments = url.path.split('/');
     final params = <String, String>{};
 
     for (final route in widget.routes) {
       final result = _getMatchingRoute(
         route: route,
-        segments: [...segments]..removeAt(0),
+        segments: [...url.pathSegments],
         params: params,
       );
 
