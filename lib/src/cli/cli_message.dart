@@ -1,59 +1,34 @@
 // ignore_for_file: avoid_print
 
-enum CliMessageType { info, error, normal }
-
 final class CliMessage {
   final String message;
-  final int indentationLevel;
-  final void Function()? task;
-  final CliMessageType type;
+  final Future<void> Function()? task;
 
-  const CliMessage.info(
-    this.message, {
-    this.indentationLevel = 0,
-    this.task,
-  }) : type = CliMessageType.info;
+  const CliMessage(this.message, {this.task});
 
-  const CliMessage.error(
-    this.message, {
-    this.indentationLevel = 0,
-    this.task,
-  }) : type = CliMessageType.error;
-
-  const CliMessage.normal(
-    this.message, {
-    this.indentationLevel = 0,
-    this.task,
-  }) : type = CliMessageType.normal;
-
-  String get _output {
+  Future<void> send() async {
     const red = '\x1B[31m';
-    const blue = '\x1B[36m';
+    const blue = '\x1B[32m';
     const white = '\x1B[0m';
 
-    final tabs = '\t' * indentationLevel;
-
-    final prefix = switch (type) {
-      CliMessageType.info => '$blue[INFO] ',
-      CliMessageType.error => '$red[ERROR] ',
-      CliMessageType.normal => '',
-    };
-
-    return '$tabs$prefix$white$message';
-  }
-
-  void run() {
     if (task == null) {
-      print(_output);
+      print('$white$message');
+
       return;
     }
 
-    final stopwatch = Stopwatch()..start();
+    try {
+      final stopwatch = Stopwatch()..start();
 
-    task!();
+      await task!();
 
-    stopwatch.stop();
+      stopwatch.stop();
 
-    print('$_output (${stopwatch.elapsedMilliseconds}ms)');
+      print(
+        '$blue[SUCCESS] $white$message (${stopwatch.elapsedMilliseconds}ms)',
+      );
+    } catch (e) {
+      print('$red[ERROR] $white$message');
+    }
   }
 }

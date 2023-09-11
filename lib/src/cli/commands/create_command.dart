@@ -1,18 +1,14 @@
-// ignore_for_file: avoid_print
-
 import 'dart:io';
 
-import 'package:args/command_runner.dart';
-
 import '../cli_message.dart';
-import '../process_runner.dart';
+import '../navand_command.dart';
 
-final class CreateCommand extends Command<int> {
+final class CreateCommand extends NavandCommand {
   @override
   String get name => 'create';
 
   @override
-  String get description => 'Set up a new Navand project.';
+  String get description => 'Set up a new project.';
 
   @override
   String get invocation => 'navand create <app_name>';
@@ -20,83 +16,105 @@ final class CreateCommand extends Command<int> {
   String get _appName => argResults!.rest.first;
 
   @override
-  int? run() {
+  Future<void> run() async {
+    super.run();
+
     if (argResults!.rest.isEmpty) {
       usageException('Please specify <app_name>.');
     }
 
     final directory = Directory('./$_appName');
 
-    if (directory.existsSync()) {
+    if (await directory.exists()) {
       usageException('Directory "$_appName" already exists.');
     }
 
-    Directory.current = directory..createSync();
+    await CliMessage(
+      'Setting up $_appName',
+      task: () async {
+        await directory.create();
 
-    _createFiles();
-    _installDependencies();
+        Directory.current = directory;
 
-    CliMessage.info('Successfully set up $_appName.').run();
+        await _createFiles();
+        await _installDependencies();
+      },
+    ).send();
 
-    CliMessage.info(
+    await CliMessage(
       'Run the following commands:\n'
       '\tcd $_appName\n'
       '\twebdev serve',
-    ).run();
+    ).send();
 
-    return 0;
+    exit(0);
   }
 
-  void _createFiles() {
-    CliMessage.info(
-      'Created files.',
-      task: () {
-        _createFile(path: './.gitignore', contents: _gitIgnore);
-        _createFile(path: './README.md', contents: _readmeDotMd);
-        _createFile(path: './pubspec.yaml', contents: _pubspecDotYaml);
+  Future<void> _createFiles() async {
+    await CliMessage(
+      'Creating files',
+      task: () async {
+        await _createFile(path: './.gitignore', contents: _gitIgnore);
+        await _createFile(path: './README.md', contents: _readmeDotMd);
+        await _createFile(path: './pubspec.yaml', contents: _pubspecDotYaml);
 
-        _createFile(
+        await _createFile(
           path: './analysis_options.yaml',
           contents: _analysisOptionsDotYaml,
         );
 
-        _createFile(path: './web/index.html', contents: _indexDotHtml);
-        _createFile(path: './web/main.dart', contents: _mainDotDart);
+        await _createFile(path: './web/index.html', contents: _indexDotHtml);
+        await _createFile(path: './web/main.dart', contents: _mainDotDart);
       },
-    ).run();
+    ).send();
   }
 
-  void _createFile({
+  Future<void> _createFile({
     required final String path,
     required final String contents,
-  }) {
-    File(path)
-      ..createSync(recursive: true)
-      ..writeAsStringSync(contents);
-  }
+  }) async {
+    await CliMessage(
+      'Creating $path',
+      task: () async {
+        final file = File(path);
 
-  void _installDependencies() {
-    CliMessage.info(
-      'Installed dependencies.',
-      task: () => _installDependency('navand'),
-    ).run();
-
-    CliMessage.info(
-      'Installed dev dependencies.',
-      task: () {
-        _installDependency('lints', dev: true);
-        _installDependency('build_runner', dev: true);
-        _installDependency('build_web_compilers', dev: true);
+        await file.create(recursive: true);
+        await file.writeAsString(contents);
       },
-    ).run();
+    ).send();
   }
 
-  void _installDependency(final String name, {final bool dev = false}) {
-    runProcess(
-      'dart',
-      ['pub', 'add', if (dev) '-d', name],
-      onError: () => CliMessage.error('Failed to install $name.').run(),
-    );
+  Future<void> _installDependencies() async {
+    await CliMessage(
+      'Installing dependencies',
+      task: () async => await _installDependency('navand'),
+    ).send();
+
+    await CliMessage(
+      'Installing dev dependencies',
+      task: () async {
+        await _installDependency('lints', dev: true);
+        await _installDependency('build_runner', dev: true);
+        await _installDependency('build_web_compilers', dev: true);
+      },
+    ).send();
+  }
+
+  Future<void> _installDependency(
+    final String name, {
+    final bool dev = false,
+  }) async {
+    await CliMessage(
+      'Installing $name',
+      task: () async {
+        final process = await Process.start(
+          'dart',
+          ['pub', 'add', if (dev) '-d', name],
+        );
+
+        addProcess(process);
+      },
+    ).send();
   }
 
   String get _gitIgnore => '''
