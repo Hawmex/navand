@@ -1,3 +1,8 @@
+## 0.3.2
+
+- Added a condition to avoid emptying the route entries when the history is
+  popped.
+
 ## 0.3.1
 
 - Fixed inconsistencies in the behavior of `Navigator`.
