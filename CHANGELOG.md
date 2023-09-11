@@ -1,3 +1,7 @@
+## 0.3.4
+
+- Add `serve` and `build` commands.
+
 ## 0.3.3
 
 - Improve `CHANGELOG.md`.
