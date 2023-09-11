@@ -38,7 +38,7 @@ final class NavandCommandRunner extends CommandRunner<int> {
     final shouldPrintVersion = topLevelResults['version'] as bool;
 
     if (shouldPrintVersion) {
-      print(const CliMessage('Navand version: $packageVersion'));
+      const CliMessage.normal('Navand version: $packageVersion').run();
       return 0;
     }
 

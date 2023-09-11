@@ -33,45 +33,37 @@ final class CreateCommand extends Command<int> {
 
     Directory.current = directory..createSync();
 
-    print(CliMessage('Setting up $_appName...'));
-
     _createFiles();
     _installDependencies();
 
-    print(
-      CliMessage(
-        '\nSuccessfully set up $_appName.',
-        type: CliMessageType.success,
-      ),
-    );
+    CliMessage.info('Successfully set up $_appName.').run();
 
-    print(const CliMessage('\nEnjoy coding!'));
-
-    print(
-      CliMessage(
-        '\nRun the following commands:\n'
-        '\tcd $_appName\n'
-        '\twebdev serve',
-      ),
-    );
+    CliMessage.info(
+      'Run the following commands:\n'
+      '\tcd $_appName\n'
+      '\twebdev serve',
+    ).run();
 
     return 0;
   }
 
   void _createFiles() {
-    print(const CliMessage('\nCreating files...'));
+    CliMessage.info(
+      'Created files.',
+      task: () {
+        _createFile(path: './.gitignore', contents: _gitIgnore);
+        _createFile(path: './README.md', contents: _readmeDotMd);
+        _createFile(path: './pubspec.yaml', contents: _pubspecDotYaml);
 
-    _createFile(path: './.gitignore', contents: _gitIgnore);
-    _createFile(path: './README.md', contents: _readmeDotMd);
-    _createFile(path: './pubspec.yaml', contents: _pubspecDotYaml);
+        _createFile(
+          path: './analysis_options.yaml',
+          contents: _analysisOptionsDotYaml,
+        );
 
-    _createFile(
-      path: './analysis_options.yaml',
-      contents: _analysisOptionsDotYaml,
-    );
-
-    _createFile(path: './web/index.html', contents: _indexDotHtml);
-    _createFile(path: './web/main.dart', contents: _mainDotDart);
+        _createFile(path: './web/index.html', contents: _indexDotHtml);
+        _createFile(path: './web/main.dart', contents: _mainDotDart);
+      },
+    ).run();
   }
 
   void _createFile({
@@ -81,47 +73,29 @@ final class CreateCommand extends Command<int> {
     File(path)
       ..createSync(recursive: true)
       ..writeAsStringSync(contents);
-
-    print(
-      CliMessage(
-        'Created $path.',
-        indentationLevel: 1,
-        type: CliMessageType.success,
-      ),
-    );
   }
 
   void _installDependencies() {
-    print(const CliMessage('\nInstalling dependencies...'));
+    CliMessage.info(
+      'Installed dependencies.',
+      task: () => _installDependency('navand'),
+    ).run();
 
-    _installDependency('navand');
-
-    print(const CliMessage('\nInstalling dev dependencies...'));
-
-    _installDependency('lints', dev: true);
-    _installDependency('build_runner', dev: true);
-    _installDependency('build_web_compilers', dev: true);
+    CliMessage.info(
+      'Installed dev dependencies.',
+      task: () {
+        _installDependency('lints', dev: true);
+        _installDependency('build_runner', dev: true);
+        _installDependency('build_web_compilers', dev: true);
+      },
+    ).run();
   }
 
   void _installDependency(final String name, {final bool dev = false}) {
     runProcess(
       'dart',
       ['pub', 'add', if (dev) '-d', name],
-      throwOnError: false,
-      onSuccess: () => print(
-        CliMessage(
-          'Successfully installed $name.',
-          indentationLevel: 1,
-          type: CliMessageType.success,
-        ),
-      ),
-      onError: () => print(
-        CliMessage(
-          'Failed to install $name.',
-          indentationLevel: 1,
-          type: CliMessageType.error,
-        ),
-      ),
+      onError: () => CliMessage.error('Failed to install $name.').run(),
     );
   }
 

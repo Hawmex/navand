@@ -13,9 +13,9 @@ void runProcess(
 
   if (processResult.exitCode > 0) {
     if (onError != null) onError();
-    if (throwOnError) throw '${processResult.stdout}';
+    if (throwOnError) throw '\n${processResult.stderr}';
 
-    print('\n${processResult.stdout}');
+    print('\n${processResult.stderr}');
   } else if (onSuccess != null) {
     onSuccess();
   }
