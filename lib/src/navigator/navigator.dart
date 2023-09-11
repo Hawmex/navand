@@ -151,6 +151,16 @@ final class _NavigatorState extends State<Navigator> {
   }
 
   Future<void> _popRouteEntries() async {
+    if (_routeEntries.length == 1) {
+      final routeEntry = _RouteEntry(_build(context));
+
+      _routeEntries.insert(0, routeEntry);
+
+      setState(() {});
+
+      await _animationFrame;
+    }
+
     final lastRouteElement = _routeEntries.removeLast()._ref.currentElement!;
 
     await widget.popAnimation?.runOnElement(lastRouteElement).finished;
@@ -253,12 +263,12 @@ final class _NavigatorState extends State<Navigator> {
   }
 
   @override
-  void initialize() {
+  void initialize() async {
     super.initialize();
 
-    Navigator._state = this;
+    await _replaceRouteEntry();
 
-    _replaceHistory(html.window.location.href);
+    Navigator._state = this;
 
     _popWaiter = StreamController.broadcast();
 
