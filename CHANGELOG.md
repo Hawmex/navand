@@ -1,3 +1,7 @@
+## 0.3.3
+
+- Improve `CHANGELOG.md`.
+
 ## 0.3.2
 
 - Add a condition to avoid emptying the route entries when the history is
