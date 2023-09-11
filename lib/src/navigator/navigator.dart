@@ -17,7 +17,7 @@ import 'route_state.dart';
 final class Navigator extends StatefulWidget {
   static _NavigatorState? _state;
 
-  /// Replaces the current route.
+  /// Pops all modals and replaces the current route.
   static Future<void> replaceRoute(final String path) async {
     await _state!._replaceRoute(path);
   }
@@ -40,7 +40,7 @@ final class Navigator extends StatefulWidget {
   final List<Route> routes;
 
   /// The animation that should be applied to the latest route after it's been
-  /// replaced or pushed.
+  /// pushed.
   final Animation? pushAnimation;
 
   /// The animation that should be applied to the latest route after it's been
