@@ -121,6 +121,8 @@ final class _NavigatorState extends State<Navigator> {
   late final StreamController<void> _popWaiter;
   late final StreamSubscription<html.Event> _historyBackSubscription;
 
+  html.Animation? _currentAnimation;
+
   Future<void> get _animationFrame async {
     final controller = StreamController<void>.broadcast();
 
@@ -150,6 +152,8 @@ final class _NavigatorState extends State<Navigator> {
   }
 
   Future<void> _popRouteEntries() async {
+    await _currentAnimation?.finished;
+
     if (_routeEntries.length == 1) {
       final routeEntry = _RouteEntry(_build(context));
 
@@ -164,12 +168,16 @@ final class _NavigatorState extends State<Navigator> {
 
     _routeEntries.last._ref.currentElement!.style.visibility = 'visible';
 
-    await widget.popAnimation?.runOnElement(lastRouteElement).finished;
+    _currentAnimation = widget.popAnimation?.runOnElement(lastRouteElement);
+
+    await _currentAnimation!.finished;
 
     setState(() {});
   }
 
   Future<void> _addRouteEntry() async {
+    await _currentAnimation?.finished;
+
     final lastRouteElement = _routeEntries.last._ref.currentElement;
     final newRouteEntry = _RouteEntry(_build(context), visible: false);
 
@@ -182,7 +190,9 @@ final class _NavigatorState extends State<Navigator> {
     final newRouteElement = newRouteEntry._ref.currentElement!
       ..style.visibility = 'visible';
 
-    await widget.pushAnimation?.runOnElement(newRouteElement).finished;
+    _currentAnimation = widget.pushAnimation?.runOnElement(newRouteElement);
+
+    await _currentAnimation!.finished;
 
     lastRouteElement?.style.visibility = 'hidden';
   }
