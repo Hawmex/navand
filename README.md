@@ -27,19 +27,19 @@ compiled into JS and painted using HTML & CSS.
 
 ### Features
 
-- **Command-Line Tool**: Navand comes with a command-line tool that scaffolds,
-  serves, and builds your applications.
+- **Command-Line Tool**: Navand has a command-line tool that scaffolds, serves,
+  and builds your applications.
 - **Navigation**: Navand offers a navigation solution called `Navigator`,
   providing a seamlessly native experience.
 - **Styled Widgets**: Navand includes an API for styling your widgets. The
-  `Style` API inspired by the declaration blocks in CSS rulesets.
+  `Style` API is inspired by the declaration blocks in CSS rulesets.
 - **Animated Widgets**: You can use Navand's animation system to improve the UI
-  of your application. The `Animation` API is designed to be similar to the
-  animation API of JavaScript.
-- **Stateful Widgets & Global State Managements**: You can add reactivity to
-  your applications using the `StatefulWidget` base class. More over, you can
-  tailor a global state management solution by utilizing the `Store`,
-  `Provider`, `ConsumerWidget`, and `ConsumerBuilder` APIs together.
+  of your application. The `Animation` API is designed similar to the animation
+  API of JavaScript.
+- **Stateful Widgets & Global State Management**: You can add reactivity to your
+  applications using the `StatefulWidget` base class. Moreover, you can tailor a
+  global state management solution by utilizing the `Store`, `Provider`,
+  `ConsumerWidget`, and `ConsumerBuilder` APIs together.
 - **Support for Asynchronous Data Flow**: Futures and streams can be dealt with
   using widgets such as `FutureBuilder` and `StreamBuilder`.
 - **Dependency Injection**: The `InheritedWidget` API can be used to inject
