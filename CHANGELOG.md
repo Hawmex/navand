@@ -1,6 +1,6 @@
 ## 1.0.0-alpha.2
 
-- Use `build_runner` instead of `webdev` for building
+- Use `build_runner` instead of `webdev` for building.
 
 ## 1.0.0-alpha.1
 
