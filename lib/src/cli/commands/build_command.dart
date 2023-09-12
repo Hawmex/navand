@@ -28,7 +28,9 @@ final class BuildCommand extends NavandCommand {
 
       addProcess(process);
 
-      process.stdout.pipe(stdout);
+      await process.exitCode;
+
+      exit(exitCode);
 
       // ignore: empty_catches
     } catch (e) {}

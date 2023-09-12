@@ -113,6 +113,8 @@ final class CreateCommand extends NavandCommand {
         );
 
         addProcess(process);
+
+        await process.exitCode;
       },
     ).send();
   }

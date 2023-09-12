@@ -62,7 +62,6 @@ final class ServeCommand extends NavandCommand {
 
       addProcess(process);
 
-      process.stdout.pipe(stdout);
       // ignore: empty_catches
     } catch (e) {}
 
