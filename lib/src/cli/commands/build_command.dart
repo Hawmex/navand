@@ -22,7 +22,7 @@ final class BuildCommand extends NavandCommand {
     try {
       final process = await Process.start(
         'dart',
-        ['pub', 'global', 'run', 'webdev', 'build'],
+        ['run', 'build_runner', 'build', '-r', '-o', 'web:build'],
         mode: ProcessStartMode.inheritStdio,
       );
 
