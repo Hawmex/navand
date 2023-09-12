@@ -1,3 +1,7 @@
+## 1.0.0-alpha.4
+
+- Fix typos in `README.md`.
+
 ## 1.0.0-alpha.3
 
 - Improve `README.md`.
