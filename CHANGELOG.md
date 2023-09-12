@@ -1,3 +1,8 @@
+## 1.0.0-alpha.3
+
+- Improve `README.md`.
+- Fix a typo in `CHANGELOG.md`.
+
 ## 1.0.0-alpha.2
 
 - Use `build_runner` instead of `webdev` for building.
