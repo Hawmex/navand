@@ -94,8 +94,7 @@ final class _NavigatorState extends State<Navigator> {
       params[route.path.substring(1)] = segments.first;
     }
 
-    if (route.variant == RouteVariant.static &&
-        route.path != (segments.firstOrNull ?? '')) {
+    if (route.variant == RouteVariant.static && route.path != segments.first) {
       return null;
     }
 
@@ -163,24 +162,29 @@ final class _NavigatorState extends State<Navigator> {
 
     final lastRouteElement = _routeEntries.removeLast()._ref.currentElement!;
 
+    _routeEntries.last._ref.currentElement!.style.visibility = 'visible';
+
     await widget.popAnimation?.runOnElement(lastRouteElement).finished;
 
     setState(() {});
   }
 
   Future<void> _addRouteEntry() async {
-    final routeEntry = _RouteEntry(_build(context), visible: false);
+    final lastRouteElement = _routeEntries.last._ref.currentElement;
+    final newRouteEntry = _RouteEntry(_build(context), visible: false);
 
-    _routeEntries.add(routeEntry);
+    _routeEntries.add(newRouteEntry);
 
     setState(() {});
 
     await _animationFrame;
 
-    final routeElement = routeEntry._ref.currentElement!
+    final newRouteElement = newRouteEntry._ref.currentElement!
       ..style.visibility = 'visible';
 
-    await widget.pushAnimation?.runOnElement(routeElement).finished;
+    await widget.pushAnimation?.runOnElement(newRouteElement).finished;
+
+    lastRouteElement?.style.visibility = 'hidden';
   }
 
   Future<void> _replaceRouteEntry() async {
@@ -288,12 +292,13 @@ final class _NavigatorState extends State<Navigator> {
 
   Widget _build(final BuildContext context) {
     final url = Uri.parse(html.window.location.href);
+    final segments = url.path.split('/');
     final params = <String, String>{};
 
     for (final route in widget.routes) {
       final result = _getMatchingRoute(
         route: route,
-        segments: [...url.pathSegments],
+        segments: [...segments]..removeAt(0),
         params: params,
       );
 
