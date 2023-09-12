@@ -1,3 +1,12 @@
+## 1.0.0-alpha.1
+
+- Hide inactive routes and fix route resolution.
+- Add a guard for an extreme case in interaction with the navigator when `pop`
+  is called quickly and in a row.
+- Improve command-line tool
+  - Force the command-line tool for the exits of child processes.
+  - Remove the unnecessary pipes.
+
 ## 0.3.4
 
 - Add `serve` and `build` commands.
