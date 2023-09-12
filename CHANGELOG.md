@@ -1,3 +1,7 @@
+## 1.0.0-alpha.2
+
+- Use `build_runner` instead of `webdev` for building
+
 ## 1.0.0-alpha.1
 
 - Hide inactive routes and fix route resolution.
