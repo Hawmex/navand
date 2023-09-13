@@ -1,3 +1,8 @@
+## 1.0.0-alpha.5
+
+- Add route validation.
+- Improve code structure and formatting.
+
 ## 1.0.0-alpha.4
 
 - Fix typos in `README.md`.
