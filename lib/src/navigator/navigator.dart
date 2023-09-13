@@ -48,13 +48,15 @@ final class Navigator extends StatefulWidget {
   final Animation? popAnimation;
 
   /// Creates a new [Navigator].
-  const Navigator({
+  Navigator({
     required this.routes,
     this.pushAnimation,
     this.popAnimation,
     super.key,
     super.ref,
-  });
+  }) {
+    Route.validateRoutes(routes);
+  }
 
   @override
   State createState() => _NavigatorState();
@@ -64,7 +66,7 @@ final class _RouteEntry {
   final _ref = Ref();
 
   late final Widget _wrappedWidget = Container(
-    [widget],
+    [_widget],
     ref: _ref,
     style: Style({
       'position': 'absolute',
@@ -72,14 +74,14 @@ final class _RouteEntry {
       'top': '0px',
       'width': '100%',
       'height': '100%',
-      if (!visible) 'visibility': 'hidden',
+      if (!_visible) 'visibility': 'hidden',
     }),
   );
 
-  final Widget widget;
-  final bool visible;
+  final Widget _widget;
+  final bool _visible;
 
-  _RouteEntry(this.widget, {this.visible = true});
+  _RouteEntry(this._widget, {final bool visible = true}) : _visible = visible;
 }
 
 final class _NavigatorState extends State<Navigator> {
@@ -167,7 +169,6 @@ final class _NavigatorState extends State<Navigator> {
     final lastRouteElement = _routeEntries.removeLast()._ref.currentElement!;
 
     _routeEntries.last._ref.currentElement!.style.visibility = 'visible';
-
     _currentAnimation = widget.popAnimation?.runOnElement(lastRouteElement);
 
     await _currentAnimation!.finished;
