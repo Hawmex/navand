@@ -307,7 +307,7 @@ final class Greeting extends StatelessWidget {
       'Installing dependencies',
       task: () async {
         for (final dependency in _dependencies) {
-          CliMessage(
+          await CliMessage(
             'Installing ${dependency._name}',
             task: () async {
               final process = await dependency._install();
@@ -316,7 +316,7 @@ final class Greeting extends StatelessWidget {
 
               await process.exitCode;
             },
-          );
+          ).send();
         }
       },
     ).send();
@@ -325,13 +325,13 @@ final class Greeting extends StatelessWidget {
       'Installing dev dependencies',
       task: () async {
         for (final devDependency in _devDependencies) {
-          CliMessage('Installing ${devDependency._name}', task: () async {
+          await CliMessage('Installing ${devDependency._name}', task: () async {
             final process = await devDependency._install();
 
             addProcess(process);
 
             await process.exitCode;
-          });
+          }).send();
         }
       },
     ).send();
