@@ -47,10 +47,9 @@ final class ImageNode extends ChildlessPaintedNode<Image, html.ImageElement> {
     addEventSubscription(
       type: 'error',
       callback: widget.onError,
-      eventTransformer: (final html.Event event) => EventDetails(
-        event,
-        targetNode: this,
-      ),
+      eventTransformer: (final html.Event event) {
+        return EventDetails(event, targetNode: this);
+      },
     );
 
     element

@@ -44,6 +44,7 @@ final class NavandCommandRunner extends CommandRunner<void> {
 
     if (shouldPrintVersion) {
       await const CliMessage('Navand version: $packageVersion').send();
+
       exit(0);
     }
 

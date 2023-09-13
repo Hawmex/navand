@@ -14,6 +14,7 @@ final class BuildContext {
   ///
   /// Also, if the [Node] owning this context is a [StatefulNode],
   /// [State.dependenciesDidUpdate] will be called.
-  T dependOnInheritedWidgetOfExactType<T extends InheritedWidget>() =>
-      _node.dependOnInheritedWidgetOfExactType<T>();
+  T dependOnInheritedWidgetOfExactType<T extends InheritedWidget>() {
+    return _node.dependOnInheritedWidgetOfExactType<T>();
+  }
 }

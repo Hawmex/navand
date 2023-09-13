@@ -1,5 +1,10 @@
 /// The connection state of an [AsyncSnapshot].
-enum ConnectionState { none, waiting, active, done }
+enum ConnectionState {
+  none,
+  waiting,
+  active,
+  done,
+}
 
 /// An immutable representation of the most recent interaction with an
 /// asynchronous computation.
@@ -17,19 +22,29 @@ final class AsyncSnapshot<T> {
   });
 
   /// Creates a new [AsyncSnapshot] with [ConnectionState.none].
-  factory AsyncSnapshot.nothing() =>
-      const AsyncSnapshot._(connectionState: ConnectionState.none);
+  factory AsyncSnapshot.nothing() {
+    return const AsyncSnapshot._(
+      connectionState: ConnectionState.none,
+    );
+  }
 
   /// Creates a new [AsyncSnapshot] with [ConnectionState.waiting].
-  factory AsyncSnapshot.waiting() =>
-      const AsyncSnapshot._(connectionState: ConnectionState.waiting);
+  factory AsyncSnapshot.waiting() {
+    return const AsyncSnapshot._(
+      connectionState: ConnectionState.waiting,
+    );
+  }
 
   /// Creates a new [AsyncSnapshot] with [connectionState] and [data].
   factory AsyncSnapshot.withData({
     required final ConnectionState connectionState,
     required final T data,
-  }) =>
-      AsyncSnapshot._(connectionState: connectionState, data: data);
+  }) {
+    return AsyncSnapshot._(
+      connectionState: connectionState,
+      data: data,
+    );
+  }
 
   /// Creates a new [AsyncSnapshot] with [connectionState], [error], and
   /// [stackTrace].
@@ -37,12 +52,13 @@ final class AsyncSnapshot<T> {
     required final ConnectionState connectionState,
     required final Object error,
     final StackTrace stackTrace = StackTrace.empty,
-  }) =>
-      AsyncSnapshot._(
-        connectionState: connectionState,
-        error: error,
-        stackTrace: stackTrace,
-      );
+  }) {
+    return AsyncSnapshot._(
+      connectionState: connectionState,
+      error: error,
+      stackTrace: stackTrace,
+    );
+  }
 
   /// Whether this [AsyncSnapshot] has data.
   bool get hasData => data != null;

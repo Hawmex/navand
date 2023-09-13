@@ -25,7 +25,9 @@ final class CliMessage {
       stopwatch.stop();
 
       print(
-        '$blue[SUCCESS] $white$message (${stopwatch.elapsedMilliseconds}ms)',
+        '$blue[SUCCESS] '
+        '$white$message '
+        '(${stopwatch.elapsedMilliseconds}ms)',
       );
     } catch (e) {
       print('$red[ERROR] $white$message');

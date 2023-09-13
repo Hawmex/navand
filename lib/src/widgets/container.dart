@@ -49,10 +49,9 @@ final class ContainerNode
     addEventSubscription(
       type: 'scroll',
       callback: widget.onScroll,
-      eventTransformer: (final html.Event event) => EventDetails(
-        event,
-        targetNode: this,
-      ),
+      eventTransformer: (final html.Event event) {
+        return EventDetails(event, targetNode: this);
+      },
     );
   }
 }

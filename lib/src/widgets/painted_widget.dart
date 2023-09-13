@@ -60,9 +60,9 @@ base mixin PaintedNode<T extends PaintedWidget, U extends html.Element>
   }) {
     if (callback != null) {
       _eventSubscriptions.add(
-        element.on[type].listen(
-          (final event) => callback(eventTransformer(event as V)),
-        ),
+        element.on[type].listen((final event) {
+          callback(eventTransformer(event as V));
+        }),
       );
     }
   }
@@ -73,82 +73,73 @@ base mixin PaintedNode<T extends PaintedWidget, U extends html.Element>
     addEventSubscription(
       type: 'click',
       callback: widget.onTap,
-      eventTransformer: (final html.Event event) => EventDetails(
-        event,
-        targetNode: this,
-      ),
+      eventTransformer: (final html.Event event) {
+        return EventDetails(event, targetNode: this);
+      },
     );
 
     addEventSubscription(
       type: 'pointerdown',
       callback: widget.onPointerDown,
-      eventTransformer: (final html.PointerEvent event) => PointerEventDetails(
-        event,
-        targetNode: this,
-      ),
+      eventTransformer: (final html.PointerEvent event) {
+        return PointerEventDetails(event, targetNode: this);
+      },
     );
 
     addEventSubscription(
       type: 'pointerup',
       callback: widget.onPointerUp,
-      eventTransformer: (final html.PointerEvent event) => PointerEventDetails(
-        event,
-        targetNode: this,
-      ),
+      eventTransformer: (final html.PointerEvent event) {
+        return PointerEventDetails(event, targetNode: this);
+      },
     );
 
     addEventSubscription(
       type: 'pointerenter',
       callback: widget.onPointerEnter,
-      eventTransformer: (final html.PointerEvent event) => PointerEventDetails(
-        event,
-        targetNode: this,
-      ),
+      eventTransformer: (final html.PointerEvent event) {
+        return PointerEventDetails(event, targetNode: this);
+      },
     );
 
     addEventSubscription(
       type: 'pointerleave',
       callback: widget.onPointerLeave,
-      eventTransformer: (final html.PointerEvent event) => PointerEventDetails(
-        event,
-        targetNode: this,
-      ),
+      eventTransformer: (final html.PointerEvent event) {
+        return PointerEventDetails(event, targetNode: this);
+      },
     );
 
     addEventSubscription(
       type: 'pointermove',
       callback: widget.onPointerMove,
-      eventTransformer: (final html.PointerEvent event) => PointerEventDetails(
-        event,
-        targetNode: this,
-      ),
+      eventTransformer: (final html.PointerEvent event) {
+        return PointerEventDetails(event, targetNode: this);
+      },
     );
 
     addEventSubscription(
       type: 'pointercancel',
       callback: widget.onPointerCancel,
-      eventTransformer: (final html.PointerEvent event) => PointerEventDetails(
-        event,
-        targetNode: this,
-      ),
+      eventTransformer: (final html.PointerEvent event) {
+        return PointerEventDetails(event, targetNode: this);
+      },
     );
 
     addEventSubscription(
       type: 'pointerover',
       callback: widget.onPointerOver,
-      eventTransformer: (final html.PointerEvent event) => PointerEventDetails(
-        event,
-        targetNode: this,
-      ),
+      eventTransformer: (final html.PointerEvent event) {
+        return PointerEventDetails(event, targetNode: this);
+      },
     );
 
     addEventSubscription(
       type: 'pointerout',
       callback: widget.onPointerOut,
-      eventTransformer: (final html.PointerEvent event) => PointerEventDetails(
-        event,
-        targetNode: this,
-      ),
+      eventTransformer: (final html.PointerEvent event) {
+        return PointerEventDetails(event, targetNode: this);
+      },
     );
 
     if (widget.style == null) {

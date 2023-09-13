@@ -33,22 +33,28 @@ final class _StreamBuilderState<T, U extends StreamBuilder<T>>
   void _subscribe() {
     if (widget.stream != null) {
       _subscription = widget.stream!.listen(
-        (final T data) => setState(
-          () => _snapshot = AsyncSnapshot.withData(
-            connectionState: ConnectionState.active,
-            data: data,
-          ),
-        ),
-        onError: (final Object error, final StackTrace stackTrace) => setState(
-          () => _snapshot = AsyncSnapshot.withError(
-            connectionState: ConnectionState.active,
-            error: error,
-            stackTrace: stackTrace,
-          ),
-        ),
-        onDone: () => setState(
-          () => _snapshot = _snapshot.inConnectionState(ConnectionState.done),
-        ),
+        (final T data) {
+          setState(() {
+            _snapshot = AsyncSnapshot.withData(
+              connectionState: ConnectionState.active,
+              data: data,
+            );
+          });
+        },
+        onError: (final Object error, final StackTrace stackTrace) {
+          setState(() {
+            _snapshot = AsyncSnapshot.withError(
+              connectionState: ConnectionState.active,
+              error: error,
+              stackTrace: stackTrace,
+            );
+          });
+        },
+        onDone: () {
+          setState(() {
+            _snapshot = _snapshot.inConnectionState(ConnectionState.done);
+          });
+        },
       );
 
       _snapshot = _snapshot.inConnectionState(ConnectionState.waiting);
@@ -97,6 +103,7 @@ final class _StreamBuilderState<T, U extends StreamBuilder<T>>
   }
 
   @override
-  Widget build(final BuildContext context) =>
-      widget.builder(context, _snapshot);
+  Widget build(final BuildContext context) {
+    return widget.builder(context, _snapshot);
+  }
 }

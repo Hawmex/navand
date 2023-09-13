@@ -29,8 +29,11 @@ final class InheritedNode<T extends InheritedWidget>
   Widget get childWidget => widget.child;
 
   /// Listens to this [InheritedWidget] to get notified when it's updated.
-  StreamSubscription<void> listen(final void Function() onUpdate) =>
-      _updateStreamController.stream.listen((final event) => onUpdate());
+  StreamSubscription<void> listen(final void Function() onUpdate) {
+    return _updateStreamController.stream.listen((final event) {
+      onUpdate();
+    });
+  }
 
   @override
   void initialize() {
@@ -41,6 +44,7 @@ final class InheritedNode<T extends InheritedWidget>
   @override
   void widgetDidUpdate(final T oldWidget) {
     super.widgetDidUpdate(oldWidget);
+
     if (widget.updateShouldNotify(oldWidget)) _updateStreamController.add(null);
   }
 

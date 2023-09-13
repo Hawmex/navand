@@ -7,9 +7,7 @@ import '../widgets/widget.dart';
 import 'build_context.dart';
 
 /// The callback function of events.
-typedef EventCallback<T extends EventDetails> = void Function(
-  T details,
-);
+typedef EventCallback<T extends EventDetails> = void Function(T details);
 
 /// The details of the fired event.
 final class EventDetails<T extends html.Event> {
@@ -50,7 +48,11 @@ final class EventDetails<T extends html.Event> {
 }
 
 /// Types of pointers.
-enum PointerType { mouse, pen, touch }
+enum PointerType {
+  mouse,
+  pen,
+  touch,
+}
 
 /// The callback function of pointer events.
 typedef PointerEventCallback<T extends PointerEventDetails> = EventCallback<T>;

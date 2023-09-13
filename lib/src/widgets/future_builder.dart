@@ -37,23 +37,23 @@ final class _FutureBuilderState<T, U extends FutureBuilder<T>>
       widget.future!.then<void>(
         (final T data) {
           if (_activeCallbackIdentity == callbackIdentity) {
-            setState(
-              () => _snapshot = AsyncSnapshot.withData(
+            setState(() {
+              _snapshot = AsyncSnapshot.withData(
                 connectionState: ConnectionState.done,
                 data: data,
-              ),
-            );
+              );
+            });
           }
         },
         onError: (final Object error, final StackTrace stackTrace) {
           if (_activeCallbackIdentity == callbackIdentity) {
-            setState(
-              () => _snapshot = AsyncSnapshot.withError(
+            setState(() {
+              _snapshot = AsyncSnapshot.withError(
                 connectionState: ConnectionState.done,
                 error: error,
                 stackTrace: stackTrace,
-              ),
-            );
+              );
+            });
           }
         },
       );
@@ -99,6 +99,7 @@ final class _FutureBuilderState<T, U extends FutureBuilder<T>>
   }
 
   @override
-  Widget build(final BuildContext context) =>
-      widget.builder(context, _snapshot);
+  Widget build(final BuildContext context) {
+    return widget.builder(context, _snapshot);
+  }
 }

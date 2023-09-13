@@ -19,6 +19,7 @@ final class ConsumerBuilder<T extends Store> extends ConsumerWidget<T> {
   const ConsumerBuilder(this.builder, {super.key, super.ref});
 
   @override
-  Widget build(final BuildContext context, final T store) =>
-      builder(context, store);
+  Widget build(final BuildContext context, final T store) {
+    return builder(context, store);
+  }
 }

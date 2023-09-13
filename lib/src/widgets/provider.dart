@@ -9,9 +9,11 @@ extension ProviderHelpers on BuildContext {
   ///
   /// Also, if the [Provider] is updated, the widget owning this
   /// context is rebuilt.
-  T dependOnProvidedStoreOfExactType<T extends Store>() => Provider.of(this)
-      .stores
-      .firstWhere((final store) => store.runtimeType == T) as T;
+  T dependOnProvidedStoreOfExactType<T extends Store>() {
+    return Provider.of(this)
+        .stores
+        .firstWhere((final store) => store.runtimeType == T) as T;
+  }
 }
 
 /// A widget that propagates multiple [Store] instances down the tree.
@@ -30,8 +32,9 @@ final class Provider extends InheritedWidget {
     super.ref,
   });
 
-  factory Provider.of(final BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<Provider>();
+  factory Provider.of(final BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<Provider>();
+  }
 
   @override
   updateShouldNotify(final Provider oldWidget) => stores != oldWidget.stores;

@@ -3,128 +3,63 @@ import 'dart:io';
 import '../cli_message.dart';
 import '../navand_command.dart';
 
+class _File {
+  final String _path;
+  final String _body;
+
+  const _File({required final String path, required final String body})
+      : _path = path,
+        _body = body;
+
+  Future<void> _create() async {
+    final file = File(_path);
+
+    await file.create(recursive: true);
+    await file.writeAsString(_body);
+  }
+}
+
+class _Dependency {
+  final String _name;
+  final bool _dev;
+
+  const _Dependency(this._name, {final bool dev = false}) : _dev = dev;
+
+  Future<Process> _install() async {
+    return await Process.start(
+      'dart',
+      [
+        'pub',
+        'add',
+        if (_dev) '-d',
+        _name,
+      ],
+    );
+  }
+}
+
 final class CreateCommand extends NavandCommand {
-  @override
-  String get name => 'create';
+  final _dependencies = const {
+    _Dependency('navand'),
+  };
 
-  @override
-  String get description => 'Set up a new project.';
+  final _devDependencies = const {
+    _Dependency('lints', dev: true),
+    _Dependency('build_runner', dev: true),
+    _Dependency('build_web_compilers', dev: true),
+  };
 
-  @override
-  String get invocation => 'navand create <app_name>';
-
-  String get _appName => argResults!.rest.first;
-
-  @override
-  Future<void> run() async {
-    super.run();
-
-    if (argResults!.rest.isEmpty) {
-      usageException('Please specify <app_name>.');
-    }
-
-    final directory = Directory('./$_appName');
-
-    if (await directory.exists()) {
-      usageException('Directory "$_appName" already exists.');
-    }
-
-    await CliMessage(
-      'Setting up $_appName',
-      task: () async {
-        await directory.create();
-
-        Directory.current = directory;
-
-        await _createFiles();
-        await _installDependencies();
-      },
-    ).send();
-
-    await CliMessage(
-      'Run the following commands:\n'
-      '\tcd $_appName\n'
-      '\twebdev serve',
-    ).send();
-
-    exit(0);
-  }
-
-  Future<void> _createFiles() async {
-    await CliMessage(
-      'Creating files',
-      task: () async {
-        await _createFile(path: './.gitignore', contents: _gitIgnore);
-        await _createFile(path: './README.md', contents: _readmeDotMd);
-        await _createFile(path: './pubspec.yaml', contents: _pubspecDotYaml);
-
-        await _createFile(
-          path: './analysis_options.yaml',
-          contents: _analysisOptionsDotYaml,
-        );
-
-        await _createFile(path: './web/index.html', contents: _indexDotHtml);
-        await _createFile(path: './web/main.dart', contents: _mainDotDart);
-      },
-    ).send();
-  }
-
-  Future<void> _createFile({
-    required final String path,
-    required final String contents,
-  }) async {
-    await CliMessage(
-      'Creating $path',
-      task: () async {
-        final file = File(path);
-
-        await file.create(recursive: true);
-        await file.writeAsString(contents);
-      },
-    ).send();
-  }
-
-  Future<void> _installDependencies() async {
-    await CliMessage(
-      'Installing dependencies',
-      task: () async => await _installDependency('navand'),
-    ).send();
-
-    await CliMessage(
-      'Installing dev dependencies',
-      task: () async {
-        await _installDependency('lints', dev: true);
-        await _installDependency('build_runner', dev: true);
-        await _installDependency('build_web_compilers', dev: true);
-      },
-    ).send();
-  }
-
-  Future<void> _installDependency(
-    final String name, {
-    final bool dev = false,
-  }) async {
-    await CliMessage(
-      'Installing $name',
-      task: () async {
-        final process = await Process.start(
-          'dart',
-          ['pub', 'add', if (dev) '-d', name],
-        );
-
-        addProcess(process);
-
-        await process.exitCode;
-      },
-    ).send();
-  }
-
-  String get _gitIgnore => '''
+  late final _files = {
+    const _File(
+      path: './.gitignore',
+      body: '''
 .dart_tool/
 build/
-''';
-
-  String get _readmeDotMd => '''
+''',
+    ),
+    _File(
+      path: './README.md',
+      body: '''
 # $_appName
 
 A [Navand](https://pub.dev/documentation/navand) App.
@@ -134,18 +69,22 @@ A [Navand](https://pub.dev/documentation/navand) App.
 ```
 webdev serve
 ```
-''';
-
-  String get _pubspecDotYaml => '''
+''',
+    ),
+    _File(
+      path: './pubspec.yaml',
+      body: '''
 name: $_appName
 description: >
   A Navand app.
 publish_to: none
 environment:
   sdk: ^3.0.1
-''';
-
-  String get _analysisOptionsDotYaml => '''
+''',
+    ),
+    const _File(
+      path: './analysis_options.yaml',
+      body: '''
 include: package:lints/recommended.yaml
 
 linter:
@@ -164,9 +103,11 @@ analyzer:
     strict-casts: true
     strict-inference: true
     strict-raw-types: true
-''';
-
-  String get _indexDotHtml => '''
+''',
+    ),
+    _File(
+      path: './web/index.html',
+      body: '''
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -201,9 +142,11 @@ analyzer:
     <noscript>You need to enable JavaScript to run this app!</noscript>
   </body>
 </html>
-''';
-
-  String get _mainDotDart => '''
+''',
+    ),
+    const _File(
+      path: './web/main.dart',
+      body: '''
 import 'package:navand/navand.dart';
 
 void main() => runApp(const App());
@@ -295,5 +238,102 @@ final class Greeting extends StatelessWidget {
     );
   }
 }
-''';
+''',
+    )
+  };
+
+  @override
+  String get name => 'create';
+
+  @override
+  String get description => 'Set up a new project.';
+
+  @override
+  String get invocation => 'navand create <app_name>';
+
+  String get _appName => argResults!.rest.first;
+
+  @override
+  Future<void> run() async {
+    super.run();
+
+    if (argResults!.rest.isEmpty) {
+      usageException('Please specify <app_name>.');
+    }
+
+    final directory = Directory('./$_appName');
+
+    if (await directory.exists()) {
+      usageException('Directory "$_appName" already exists.');
+    }
+
+    await CliMessage(
+      'Setting up $_appName',
+      task: () async {
+        await directory.create();
+
+        Directory.current = directory;
+
+        await _createFiles();
+        await _installDependencies();
+      },
+    ).send();
+
+    await CliMessage(
+      'Run the following commands:\n'
+      '\tcd $_appName\n'
+      '\twebdev serve',
+    ).send();
+
+    exit(0);
+  }
+
+  Future<void> _createFiles() async {
+    await CliMessage(
+      'Creating files',
+      task: () async {
+        for (final file in _files) {
+          await CliMessage(
+            'Creating ${file._path}',
+            task: () async => await file._create(),
+          ).send();
+        }
+      },
+    ).send();
+  }
+
+  Future<void> _installDependencies() async {
+    await CliMessage(
+      'Installing dependencies',
+      task: () async {
+        for (final dependency in _dependencies) {
+          CliMessage(
+            'Installing ${dependency._name}',
+            task: () async {
+              final process = await dependency._install();
+
+              addProcess(process);
+
+              await process.exitCode;
+            },
+          );
+        }
+      },
+    ).send();
+
+    await CliMessage(
+      'Installing dev dependencies',
+      task: () async {
+        for (final devDependency in _devDependencies) {
+          CliMessage('Installing ${devDependency._name}', task: () async {
+            final process = await devDependency._install();
+
+            addProcess(process);
+
+            await process.exitCode;
+          });
+        }
+      },
+    ).send();
+  }
 }

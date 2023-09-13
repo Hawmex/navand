@@ -23,8 +23,9 @@ abstract base class Widget {
   /// - If the return value is `true`, the child [Node] is updated.
   /// - If the return value is `false`, the child [Node] is replaced by a new
   ///   one.
-  bool matches(final Widget otherWidget) =>
-      runtimeType == otherWidget.runtimeType && key == otherWidget.key;
+  bool matches(final Widget otherWidget) {
+    return runtimeType == otherWidget.runtimeType && key == otherWidget.key;
+  }
 }
 
 /// Similar to `ref` in React and `GlobalKey` in Flutter.
@@ -71,8 +72,11 @@ abstract base class Node<T extends Widget> {
 
   Node(this._widget);
 
-  List<Node> get parentNodes =>
-      parentNode == null ? [] : [parentNode!, ...parentNode!.parentNodes];
+  List<Node> get parentNodes {
+    if (parentNode == null) return [];
+
+    return [parentNode!, ...parentNode!.parentNodes];
+  }
 
   T get widget => _widget;
 
@@ -83,7 +87,9 @@ abstract base class Node<T extends Widget> {
 
     if (newWidget != oldWidget) {
       widgetWillUpdate(newWidget);
+
       _widget = newWidget;
+
       widgetDidUpdate(oldWidget);
     }
   }
@@ -93,9 +99,9 @@ abstract base class Node<T extends Widget> {
   /// Also, if the parent [InheritedWidget] is updated, [dependenciesDidUpdate]
   /// is called.
   U dependOnInheritedWidgetOfExactType<U extends InheritedWidget>() {
-    final inheritedNode = parentNodes.firstWhere(
-      (final parentNode) => parentNode.widget.runtimeType == U,
-    ) as InheritedNode;
+    final inheritedNode = parentNodes.firstWhere((final parentNode) {
+      return parentNode.widget.runtimeType == U;
+    }) as InheritedNode;
 
     late final StreamSubscription<void> subscription;
 
@@ -271,7 +277,9 @@ abstract base class MultiChildNode<T extends Widget> extends Node<T>
 
     for (final oldChildNode in oldChildNodes) {
       final index = newChildNodes.indexWhere(
-        (final newChildNode) => newChildNode.widget == oldChildNode.widget,
+        (final newChildNode) {
+          return newChildNode.widget == oldChildNode.widget;
+        },
         exactWidgetsSearchStartIndex,
       );
 
@@ -284,9 +292,10 @@ abstract base class MultiChildNode<T extends Widget> extends Node<T>
     for (final oldChildNode in oldChildNodes) {
       if (!newChildNodes.contains(oldChildNode)) {
         final index = newChildNodes.indexWhere(
-          (final newChildNode) =>
-              !oldChildNodes.contains(newChildNode) &&
-              newChildNode.widget.matches(oldChildNode.widget),
+          (final newChildNode) {
+            return !oldChildNodes.contains(newChildNode) &&
+                newChildNode.widget.matches(oldChildNode.widget);
+          },
           matchingWidgetsSearchStartIndex,
         );
 
