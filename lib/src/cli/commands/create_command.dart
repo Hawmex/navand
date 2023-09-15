@@ -144,12 +144,32 @@ analyzer:
 </html>
 ''',
     ),
-    const _File(
+    _File(
       path: './web/main.dart',
       body: '''
 import 'package:navand/navand.dart';
+import 'package:$_appName/app.dart';
 
 void main() => runApp(const App());
+''',
+    ),
+    const _File(path: './web/styles.css', body: '''
+*,
+*::before,
+*::after {
+  margin: 0px;
+  padding: 0px;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+'''),
+    const _File(
+      path: './lib/app.dart',
+      body: '''
+import 'package:navand/navand.dart';
+
+import 'widgets/greeting.dart';
+import 'widgets/logo.dart';
 
 // The main widget of your Navand application.
 final class App extends StatelessWidget {
@@ -179,29 +199,12 @@ final class App extends StatelessWidget {
     );
   }
 }
-
-final class Logo extends StatelessWidget {
-  const Logo({super.key, super.ref});
-
-  @override
-  Widget build(final BuildContext context) {
-    return const Image(
-      'https://raw.githubusercontent.com/Hawmex/Hawmex/main/assets/icon.svg',
-      style: Style({'width': '128px', 'height': '128px'}),
-      // You can use `Animation` to add animation to widgets.
-      animation: Animation(
-        keyframes: [
-          Keyframe(offset: 0, style: Style({'transform': 'translateY(0px)'})),
-          Keyframe(offset: 1, style: Style({'transform': 'translateY(8px)'})),
-        ],
-        duration: Duration(seconds: 1),
-        easing: Easing(0.2, 0, 0.4, 1),
-        direction: AnimationDirection.alternate,
-        iterations: double.infinity,
-      ),
-    );
-  }
-}
+''',
+    ),
+    const _File(
+      path: './lib/widgets/greeting.dart',
+      body: '''
+import 'package:navand/navand.dart';
 
 final class Greeting extends StatelessWidget {
   const Greeting({super.key, super.ref});
@@ -239,7 +242,36 @@ final class Greeting extends StatelessWidget {
   }
 }
 ''',
-    )
+    ),
+    const _File(
+      path: './lib/widgets/logo.dart',
+      body: '''
+import 'package:navand/navand.dart';
+
+final class Logo extends StatelessWidget {
+  const Logo({super.key, super.ref});
+
+  @override
+  Widget build(final BuildContext context) {
+    return const Image(
+      'https://raw.githubusercontent.com/Hawmex/Hawmex/main/assets/icon.svg',
+      style: Style({'width': '128px', 'height': '128px'}),
+      // You can use `Animation` to add animation to widgets.
+      animation: Animation(
+        keyframes: [
+          Keyframe(offset: 0, style: Style({'transform': 'translateY(0px)'})),
+          Keyframe(offset: 1, style: Style({'transform': 'translateY(8px)'})),
+        ],
+        duration: Duration(seconds: 1),
+        easing: Easing(0.2, 0, 0.4, 1),
+        direction: AnimationDirection.alternate,
+        iterations: double.infinity,
+      ),
+    );
+  }
+}
+''',
+    ),
   };
 
   @override
