@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:html' as html;
 
 import '../core/build_context.dart';
@@ -61,22 +62,26 @@ final class Ref {
 }
 
 /// An instantiation of a [Widget] at a particular location in the [Node] tree.
-abstract base class Node<T extends Widget> {
+abstract base class Node<T extends Widget> extends LinkedListEntry<Node> {
+  static Node? getAncestorWhere(
+    final Node node,
+    final bool Function(Node ancestor) test,
+  ) {
+    if (node.parent == null) return null;
+    if (test(node.parent!)) return node.parent;
+
+    return getAncestorWhere(node.parent!, test);
+  }
+
   bool _isActive = false;
   T _widget;
 
-  final _dependencySubscriptions = <StreamSubscription<void>>{};
+  final _dependencySubscriptions = HashSet<StreamSubscription<void>>();
 
   late final context = BuildContext(this);
-  late final Node? parentNode;
+  late final Node? parent;
 
   Node(this._widget);
-
-  List<Node> get parentNodes {
-    if (parentNode == null) return [];
-
-    return [parentNode!, ...parentNode!.parentNodes];
-  }
 
   T get widget => _widget;
 
@@ -99,9 +104,10 @@ abstract base class Node<T extends Widget> {
   /// Also, if the parent [InheritedWidget] is updated, [dependenciesDidUpdate]
   /// is called.
   U dependOnInheritedWidgetOfExactType<U extends InheritedWidget>() {
-    final inheritedNode = parentNodes.firstWhere((final parentNode) {
-      return parentNode.widget.runtimeType == U;
-    }) as InheritedNode;
+    final inheritedNode = getAncestorWhere(
+      this,
+      (final ancestor) => ancestor.widget.runtimeType == U,
+    ) as InheritedNode;
 
     late final StreamSubscription<void> subscription;
 
@@ -188,7 +194,7 @@ base mixin ReassemblableNode<T extends Widget> on Node<T> {
 /// A [ReassemblableNode] with a child in the [Node] tree.
 abstract base class SingleChildNode<T extends Widget> extends Node<T>
     with ReassemblableNode<T> {
-  late Node childNode;
+  late Node child;
 
   SingleChildNode(super.widget);
 
@@ -198,35 +204,34 @@ abstract base class SingleChildNode<T extends Widget> extends Node<T>
   void initialize() {
     super.initialize();
 
-    childNode = childWidget.createNode()
-      ..parentNode = this
+    child = childWidget.createNode()
+      ..parent = this
       ..initialize();
   }
 
   @override
   void reassemble() {
-    if (childWidget.matches(childNode.widget)) {
-      childNode.widget = childWidget;
+    if (childWidget.matches(child.widget)) {
+      child.widget = childWidget;
     } else {
-      childNode.dispose();
+      child.dispose();
 
-      childNode = childWidget.createNode()
-        ..parentNode = this
+      child = childWidget.createNode()
+        ..parent = this
         ..initialize();
     }
   }
 
   @override
   void dispose() {
-    childNode.dispose();
+    child.dispose();
     super.dispose();
   }
 }
 
-/// A [ReassemblableNode] with children in the [Node] tree.
 abstract base class MultiChildNode<T extends Widget> extends Node<T>
     with ReassemblableNode<T> {
-  late List<Node> childNodes;
+  late LinkedList<Node> children;
 
   MultiChildNode(super.widget);
 
@@ -253,81 +258,69 @@ abstract base class MultiChildNode<T extends Widget> extends Node<T>
   void initialize() {
     super.initialize();
 
-    childNodes = _sanitizedChildWidgets
-        .map((final childWidget) => childWidget.createNode())
-        .toList();
+    children = LinkedList<Node>();
 
-    for (final childNode in childNodes) {
-      childNode
-        ..parentNode = this
+    for (final childWidget in _sanitizedChildWidgets) {
+      final child = childWidget.createNode();
+
+      children.add(child);
+
+      child
+        ..parent = this
         ..initialize();
     }
   }
 
   @override
   void reassemble() {
-    final oldChildNodes = childNodes;
+    final oldChildren = children;
+    final newChildren = LinkedList<Node>();
+    final newChildWidgets = _sanitizedChildWidgets;
 
-    final newChildNodes = _sanitizedChildWidgets
-        .map((final childWidget) => childWidget.createNode())
-        .toList();
+    for (final newChildWidget in newChildWidgets) {
+      Node? oldChild = oldChildren.firstOrNull;
+      bool didReuse = false;
 
-    int exactWidgetsSearchStartIndex = 0;
-    int matchingWidgetsSearchStartIndex = 0;
+      while (oldChild != null) {
+        if (oldChild.widget == newChildWidget ||
+            oldChild.widget.matches(newChildWidget)) {
+          newChildren.add(oldChild..unlink());
 
-    for (final oldChildNode in oldChildNodes) {
-      final index = newChildNodes.indexWhere(
-        (final newChildNode) {
-          return newChildNode.widget == oldChildNode.widget;
-        },
-        exactWidgetsSearchStartIndex,
-      );
+          oldChild.widget = newChildWidget;
+          didReuse = true;
 
-      if (index > -1) {
-        newChildNodes[index] = oldChildNode;
-        exactWidgetsSearchStartIndex = index + 1;
-      }
-    }
-
-    for (final oldChildNode in oldChildNodes) {
-      if (!newChildNodes.contains(oldChildNode)) {
-        final index = newChildNodes.indexWhere(
-          (final newChildNode) {
-            return !oldChildNodes.contains(newChildNode) &&
-                newChildNode.widget.matches(oldChildNode.widget);
-          },
-          matchingWidgetsSearchStartIndex,
-        );
-
-        if (index > -1) {
-          final newChildNode = newChildNodes[index];
-
-          oldChildNode.widget = newChildNode.widget;
-          newChildNodes[index] = oldChildNode;
-          matchingWidgetsSearchStartIndex = index + 1;
+          break;
         }
+
+        oldChild = oldChild.next;
       }
-    }
 
-    for (final childNode in childNodes) {
-      if (!newChildNodes.contains(childNode)) childNode.dispose();
-    }
+      if (!didReuse) {
+        final newChild = newChildWidget.createNode();
 
-    childNodes = newChildNodes;
+        newChildren.add(newChild);
 
-    for (final childNode in childNodes) {
-      if (!oldChildNodes.contains(childNode)) {
-        childNode
-          ..parentNode = this
+        newChild
+          ..parent = this
           ..initialize();
       }
+    }
+
+    children = newChildren;
+
+    while (oldChildren.lastOrNull != null) {
+      oldChildren.last
+        ..unlink()
+        ..dispose();
     }
   }
 
   @override
   void dispose() {
-    for (final childNode in childNodes) {
-      childNode.dispose();
+    while (children.lastOrNull != null) {
+      children.last
+        ..unlink()
+        ..dispose();
     }
 
     super.dispose();

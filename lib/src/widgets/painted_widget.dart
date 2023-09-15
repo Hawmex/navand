@@ -45,12 +45,52 @@ abstract base class PaintedWidget extends Widget {
 /// A [Node] corresponding to [PaintedWidget].
 base mixin PaintedNode<T extends PaintedWidget, U extends html.Element>
     on Node<T> {
+  static PaintedNode? _getLastPaintedChild(final Node? node) {
+    if (node is PaintedNode) return node;
+
+    if (node is SingleChildNode) {
+      return _getLastPaintedChild(node.child);
+    }
+
+    if (node is MultiChildNode) {
+      if (node.children.isEmpty) {
+        return _getLastPaintedChild(node.previous);
+      }
+
+      return _getLastPaintedChild(node.children.last);
+    }
+
+    return null;
+  }
+
   /// The corresponding [html.Element] to this [PaintedNode].
   U get element;
 
   final _eventSubscriptions = <StreamSubscription<html.Event>>{};
 
+  late final _parentPaintedNode = Node.getAncestorWhere(
+    this,
+    (final ancestor) => ancestor is PaintedNode,
+  ) as PaintedNode?;
+
   late final html.Animation? _animation;
+
+  PaintedNode? get _previousPaintedNode {
+    Node? currentNode = this;
+
+    while (currentNode != null) {
+      if (currentNode != this && currentNode == _parentPaintedNode) break;
+
+      final result = _getLastPaintedChild(currentNode.previous);
+
+      if (result != null) return result;
+
+      currentNode =
+          currentNode.parent != _parentPaintedNode ? currentNode.parent : null;
+    }
+
+    return null;
+  }
 
   /// Adds an event subscription to [type] with [callback].
   void addEventSubscription<V extends html.Event, W extends EventDetails<V>>({
@@ -163,32 +203,12 @@ base mixin PaintedNode<T extends PaintedWidget, U extends html.Element>
   void initialize() {
     super.initialize();
 
-    final parentPaintedNodes = parentNodes.whereType<PaintedNode>();
+    final parentElement = _parentPaintedNode?.element ?? html.document.body!;
 
-    if (parentPaintedNodes.isEmpty) {
-      html.document.body!.append(element);
+    if (_previousPaintedNode == null) {
+      parentElement.insertBefore(element, parentElement.firstChild);
     } else {
-      final parentPaintedNode = parentPaintedNodes.first;
-
-      if (parentPaintedNode is SingleChildPaintedNode) {
-        parentPaintedNode.element.append(element);
-      } else if (parentPaintedNode is MultiChildPaintedNode) {
-        final thisWithParentNodes = [this, ...parentNodes];
-
-        final parentPaintedNodeChild =
-            thisWithParentNodes.indexOf(parentPaintedNodes.first) - 1;
-
-        final index = parentPaintedNode.childNodes
-            .indexOf(thisWithParentNodes[parentPaintedNodeChild]);
-
-        final parentElement = parentPaintedNode.element;
-
-        if (parentElement.children.length <= index) {
-          parentElement.append(element);
-        } else {
-          parentElement.insertBefore(element, parentElement.children[index]);
-        }
-      }
+      _previousPaintedNode!.element.after(element);
     }
 
     assembleElement();

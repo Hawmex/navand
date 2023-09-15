@@ -31,7 +31,7 @@ void runApp(final Widget app) {
     _appNode?.dispose();
 
     _appNode = app.createNode()
-      ..parentNode = null
+      ..parent = null
       ..initialize();
   }
 }
