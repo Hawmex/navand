@@ -1,7 +1,20 @@
+## 1.0.0-alpha.6
+
+- Update example.
+- Update application template.
+- Improve performance.
+
+### Breaking Changes
+
+- Change variable names for nodes' parents and children.
+
 ## 1.0.0-alpha.5
 
-- Add route validation.
 - Improve code structure and formatting.
+
+### Breaking Changes
+
+- Add route validation.
 
 ## 1.0.0-alpha.4
 
