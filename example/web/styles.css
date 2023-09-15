@@ -1,0 +1,8 @@
+*,
+*::before,
+*::after {
+  margin: 0px;
+  padding: 0px;
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
