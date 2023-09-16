@@ -8,42 +8,29 @@ base mixin _DomNode<T extends Widget> on _Node<T> {
 
   html.Node get _htmlNode;
 
-  _DomNode? _getLastDomChild(final _Node? node) {
-    if (node is _DomNode) return node;
-    if (node is _SingleChildNode) return _getLastDomChild(node._child);
+  _DomNode? _findDomNode(final _Node node, {final bool skip = false}) {
+    if (skip) {
+      if (node.previous != null) return _findDomNode(node.previous!);
 
-    if (node is _MultiChildNode) {
-      if (node._children.isEmpty) {
-        if (node.previous == null && node._parent != _parentDomWidgetNode) {
-          return _getLastDomChild(node._parent?.previous);
-        }
-
-        return _getLastDomChild(node.previous);
+      if (node._parent == null || node._parent == _parentDomWidgetNode) {
+        return null;
       }
 
-      return _getLastDomChild(node._children.last);
+      return _findDomNode(node._parent!, skip: true);
     }
 
-    return null;
-  }
+    if (node is _SingleChildNode) return _findDomNode(node._child);
 
-  _DomNode? get _previousDomNode {
-    _Node? currentNode = this;
+    if (node is _FragmentNode) {
+      if (node._children.isEmpty) return _findDomNode(node, skip: true);
 
-    while (currentNode != null) {
-      if (currentNode._parent is _MultiChildNode) {
-        final result = _getLastDomChild(currentNode.previous);
-
-        if (result != null) return result;
-      }
-
-      currentNode = currentNode._parent != _parentDomWidgetNode
-          ? currentNode._parent
-          : null;
+      return _findDomNode(node._children.last);
     }
 
-    return null;
+    return node as _DomNode;
   }
+
+  _DomNode? get _previousDomNode => _findDomNode(this, skip: true);
 
   @override
   void _initialize() {
