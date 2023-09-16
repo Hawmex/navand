@@ -1,3 +1,5 @@
+part of animation;
+
 /// Similar to `animation-fill-mode` in CSS and JS animations.
 enum AnimationFillMode {
   forwards('forwards'),

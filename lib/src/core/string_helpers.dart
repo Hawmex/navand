@@ -1,3 +1,5 @@
+part of core;
+
 /// Adds some utilities to transform strings.
 extension StringHelpers on String {
   /// Capitalizes the first letter of this string and returns a new one.

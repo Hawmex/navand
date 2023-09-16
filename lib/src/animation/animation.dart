@@ -1,12 +1,6 @@
-import 'dart:html' as html;
+part of animation;
 
-import '../widgets/painted_widget.dart';
-import 'animation_direction.dart';
-import 'animation_fill_mode.dart';
-import 'easing.dart';
-import 'keyframe.dart';
-
-/// This class can be used to add animations to a [PaintedWidget].
+/// This class can be used to add animations to a [DomWidget].
 ///
 /// The properties of this class is almost identical to `animate()`'s parameters
 /// in JavaScript. Though, some naming conventions are different.

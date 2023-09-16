@@ -1,4 +1,4 @@
-import 'dart:async';
+part of core;
 
 /// Debounces multiple tasks by running only the last one using
 /// [scheduleMicrotask].

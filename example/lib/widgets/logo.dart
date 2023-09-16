@@ -5,10 +5,13 @@ final class Logo extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return const Image(
-      'https://raw.githubusercontent.com/Hawmex/Hawmex/main/assets/icon.svg',
+    return const DomWidget(
+      'img',
+      attributes: {
+        'src':
+            'https://raw.githubusercontent.com/Hawmex/Hawmex/main/assets/icon.svg'
+      },
       style: Style({'width': '128px', 'height': '128px'}),
-      // You can use `Animation` to add animation to widgets.
       animation: Animation(
         keyframes: [
           Keyframe(offset: 0, style: Style({'transform': 'translateY(0px)'})),

@@ -1,3 +1,5 @@
+part of animation;
+
 /// An implementation of the `cubic-bezier` curves.
 ///
 /// Note that [Easing] includes five static properties:

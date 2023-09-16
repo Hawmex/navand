@@ -1,5 +1,4 @@
-import '../core/style.dart';
-import 'easing.dart';
+part of animation;
 
 /// Similar to keyframes in CSS and JS animations.
 ///

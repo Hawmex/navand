@@ -171,16 +171,17 @@ import 'package:navand/navand.dart';
 import 'widgets/greeting.dart';
 import 'widgets/logo.dart';
 
-// The main widget of your Navand application.
 final class App extends StatelessWidget {
   const App({super.key, super.ref});
 
   @override
   Widget build(final BuildContext context) {
-    // You can use `Container` to wrap multiple widgets.
-    return const Container(
-      [Logo(), Greeting()],
-      // You can use `Style` to style your painted widgets.
+    return const DomWidget(
+      'div',
+      children: [
+        Logo(),
+        Greeting(),
+      ],
       style: Style({
         'display': 'flex',
         'flex-flow': 'column',
@@ -211,33 +212,37 @@ final class Greeting extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    // Tip: You can use `'display': 'contents'` with `Container` to render
-    // multiple children without a wrapper.
-    return const Container(
+    return const Fragment(
       [
-        Text(
-          'Welcome to Navand!',
+        DomWidget(
+          'span',
+          children: [
+            Text('Welcome to Navand!'),
+          ],
           style: Style({
             'font-size': '24px',
             'font-weight': 'bold',
             'color': '#00e690',
           }),
         ),
-        Container([
-          Text('To get started, edit '),
-          Text(
-            'web/main.dart',
-            style: Style({
-              'font-family': 'monospace',
-              'background': '#212121',
-              'border-radius': '4px',
-              'padding': '4px',
-            }),
-          ),
-          Text(' and save to reload.'),
-        ])
+        DomWidget(
+          'div',
+          children: [
+            Text('To get started, edit '),
+            DomWidget(
+              'span',
+              children: [Text('web/main.dart')],
+              style: Style({
+                'font-family': 'monospace',
+                'background': '#212121',
+                'border-radius': '4px',
+                'padding': '4px',
+              }),
+            ),
+            Text(' and save to reload.'),
+          ],
+        )
       ],
-      style: Style({'display': 'contents'}),
     );
   }
 }
@@ -253,10 +258,13 @@ final class Logo extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    return const Image(
-      'https://raw.githubusercontent.com/Hawmex/Hawmex/main/assets/icon.svg',
+    return const DomWidget(
+      'img',
+      attributes: {
+        'src':
+            'https://raw.githubusercontent.com/Hawmex/Hawmex/main/assets/icon.svg'
+      },
       style: Style({'width': '128px', 'height': '128px'}),
-      // You can use `Animation` to add animation to widgets.
       animation: Animation(
         keyframes: [
           Keyframe(offset: 0, style: Style({'transform': 'translateY(0px)'})),

@@ -1,3 +1,5 @@
+part of animation;
+
 /// Similar to `animation-direction` in CSS and JS animations.
 enum AnimationDirection {
   normal('normal'),

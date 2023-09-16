@@ -1,14 +1,146 @@
-import 'dart:async';
-import 'dart:html' as html;
+part of widgets;
 
-import '../animation/animation.dart';
-import '../core/build_context.dart';
-import '../core/style.dart';
-import '../widgets/container.dart';
-import '../widgets/stateful_widget.dart';
-import '../widgets/widget.dart';
-import 'route.dart';
-import 'route_state.dart';
+const _script = r'''
+let currentIndex = history.state?.index ?? 0;
+let preventingForward = false;
+
+if (!history.state || !("index" in history.state)) {
+  history.replaceState(
+    { index: currentIndex, state: history.state },
+    document.title
+  );
+}
+
+const getState = Object.getOwnPropertyDescriptor(
+  History.prototype,
+  "state"
+).get;
+
+const { pushState, replaceState } = history;
+
+const onPopstate = () => {
+  const state = getState.call(history);
+
+  if (!state) {
+    replaceState.call(history, { index: currentIndex + 1 }, document.title);
+  }
+
+  const index = state ? state.index : currentIndex + 1;
+
+  if (index > currentIndex) {
+    preventingForward = true;
+
+    history.back();
+  } else if (preventingForward) {
+    preventingForward = false;
+  } else {
+    window.dispatchEvent(new Event("__navand-navigator-back__"));
+  }
+
+  currentIndex = index;
+};
+
+const modifyStateFunction = (func, n) => {
+  return (state, ...args) => {
+    func.call(history, { index: currentIndex + n, state }, ...args);
+
+    currentIndex += n;
+  };
+};
+
+const modifyStateGetter = (object) => {
+  const { get } = Object.getOwnPropertyDescriptor(object.prototype, "state");
+
+  Object.defineProperty(object.prototype, "state", {
+    configurable: true,
+    enumerable: true,
+    set: undefined,
+    get() {
+      return get.call(this).state;
+    },
+  });
+};
+
+modifyStateGetter(History);
+modifyStateGetter(PopStateEvent);
+
+history.pushState = modifyStateFunction(pushState, 1);
+history.replaceState = modifyStateFunction(replaceState, 0);
+
+window.addEventListener("popstate", onPopstate);
+''';
+
+void _addBackEventScript() => js.context.callMethod('eval', [_script]);
+
+/// The navigation state of the current [Route].
+final class RouteState {
+  final String path;
+  final Map<String, String> params;
+  final Map<String, String> queryParams;
+
+  /// Creates a new [RouteState].
+  const RouteState({
+    required this.path,
+    required this.params,
+    required this.queryParams,
+  });
+}
+
+/// The type of the builder function used in a [Route].
+typedef RouteWidgetBuilder = Widget Function(
+  BuildContext context,
+  RouteState state,
+);
+
+/// The type of the redirector function used in a [Route].
+typedef RouteRedirector = String? Function(
+  BuildContext context,
+  RouteState state,
+);
+
+/// The variant of a [Route].
+///
+/// - If [Route.path] is `*`, route variant is equivalent to [wildcard].
+/// - If [Route.path] starts with `:`, route variant is equivalent to [dynamic].
+/// - Else, route variant is equivalent to [static].
+enum _RouteVariant {
+  static,
+  dynamic,
+  wildcard,
+}
+
+/// A class to declare routes using [path], [builder], and [routes].
+final class Route {
+  static void _validateRoutes(final List<Route> routes) {
+    final uniquePaths = routes.map((final route) => route.path).toSet();
+
+    if (uniquePaths.length != routes.length) {
+      throw StateError('Avoid using duplicate paths when declaring routes.');
+    }
+  }
+
+  final String path;
+  final List<Route> routes;
+  final RouteWidgetBuilder? builder;
+  final RouteRedirector? redirector;
+
+  /// Creates a new [Route].
+  Route({
+    required this.path,
+    this.builder,
+    this.redirector,
+    this.routes = const [],
+  }) {
+    _validateRoutes(routes);
+  }
+
+  _RouteVariant get _variant {
+    if (path == '*') return _RouteVariant.wildcard;
+    if (path.startsWith(':')) return _RouteVariant.dynamic;
+
+    return _RouteVariant.static;
+  }
+}
 
 /// The navigation outlet of a Navand app.
 ///
@@ -55,7 +187,7 @@ final class Navigator extends StatefulWidget {
     super.key,
     super.ref,
   }) {
-    Route.validateRoutes(routes);
+    Route._validateRoutes(routes);
   }
 
   @override
@@ -65,8 +197,11 @@ final class Navigator extends StatefulWidget {
 final class _RouteEntry {
   final _ref = Ref();
 
-  late final Widget _wrappedWidget = Container(
-    [_widget],
+  late final Widget _wrappedWidget = DomWidget(
+    'div',
+    children: [
+      _widget,
+    ],
     ref: _ref,
     style: Style({
       'position': 'absolute',
@@ -90,13 +225,14 @@ final class _NavigatorState extends State<Navigator> {
     required final List<String> segments,
     required final Map<String, String> params,
   }) {
-    if (route.variant == RouteVariant.wildcard) return route;
+    if (route._variant == _RouteVariant.wildcard) return route;
 
-    if (route.variant == RouteVariant.dynamic && segments.isNotEmpty) {
+    if (route._variant == _RouteVariant.dynamic && segments.isNotEmpty) {
       params[route.path.substring(1)] = segments.first;
     }
 
-    if (route.variant == RouteVariant.static && route.path != segments.first) {
+    if (route._variant == _RouteVariant.static &&
+        route.path != segments.first) {
       return null;
     }
 
@@ -326,7 +462,7 @@ final class _NavigatorState extends State<Navigator> {
           if (redirectResult != null) {
             _replaceRoute(redirectResult);
 
-            return const Container([]);
+            return const Fragment([]);
           }
         }
 
@@ -339,8 +475,11 @@ final class _NavigatorState extends State<Navigator> {
 
   @override
   Widget build(final BuildContext context) {
-    return Container(
-      [for (final routeEntry in _routeEntries) routeEntry._wrappedWidget],
+    return DomWidget(
+      'div',
+      children: [
+        for (final routeEntry in _routeEntries) routeEntry._wrappedWidget,
+      ],
       style: const Style({'position': 'relative'}),
     );
   }
