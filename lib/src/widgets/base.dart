@@ -110,7 +110,7 @@ sealed class _Node<T extends Widget> extends LinkedListEntry<_Node> {
   bool _isActive = false;
   T __widget;
 
-  final _dependencySubscriptions = HashSet<StreamSubscription<void>>();
+  final _dependencies = HashMap<_InheritedNode, StreamSubscription<void>>();
 
   late final _context = BuildContext().._node = this;
   late final _Node? _parent;
@@ -137,6 +137,10 @@ sealed class _Node<T extends Widget> extends LinkedListEntry<_Node> {
       (final ancestor) => ancestor._widget.runtimeType == U,
     ) as _InheritedNode;
 
+    if (_dependencies.containsKey(inheritedNode)) {
+      return inheritedNode._widget as U;
+    }
+
     late final StreamSubscription<void> subscription;
 
     subscription = inheritedNode._listen(() {
@@ -144,7 +148,7 @@ sealed class _Node<T extends Widget> extends LinkedListEntry<_Node> {
       _dependenciesDidUpdate();
     });
 
-    _dependencySubscriptions.add(subscription);
+    _dependencies[inheritedNode] = subscription;
 
     return inheritedNode._widget as U;
   }
@@ -160,11 +164,11 @@ sealed class _Node<T extends Widget> extends LinkedListEntry<_Node> {
   void _dependenciesDidUpdate() {}
 
   void _dispose() {
-    for (final dependencySubscription in _dependencySubscriptions) {
+    for (final dependencySubscription in _dependencies.values) {
       dependencySubscription.cancel();
     }
 
-    _dependencySubscriptions.clear();
+    _dependencies.clear();
 
     _widget.ref?._node = null;
     _isActive = false;
