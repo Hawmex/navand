@@ -1,3 +1,9 @@
+## 1.0.0-alpha.7
+
+### Breaking Changes
+
+- Rewrite the framework.
+
 ## 1.0.0-alpha.6
 
 - Update example.
