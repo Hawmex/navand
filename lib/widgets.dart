@@ -1,3 +1,4 @@
+/// Navand's widgets API.
 library widgets;
 
 import 'dart:async';

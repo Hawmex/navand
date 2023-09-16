@@ -1,3 +1,4 @@
+/// Navand's animation API.
 library animation;
 
 import 'dart:html' as html;

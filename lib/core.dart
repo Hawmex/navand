@@ -1,3 +1,4 @@
+/// Navand's core API.
 library core;
 
 import 'dart:async';
