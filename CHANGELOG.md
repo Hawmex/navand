@@ -1,3 +1,11 @@
+## 1.0.0-alpha.9
+
+- Add docs for `DomWidget` and `Text`.
+
+### Breaking Changes
+
+- Change the structure of libraries.
+
 ## 1.0.0-alpha.8
 
 - Improve the internal APIs.
