@@ -197,7 +197,7 @@ final class Navigator extends StatefulWidget {
 final class _RouteEntry {
   final _ref = Ref();
 
-  late final Widget _wrappedWidget = DomWidget(
+  late final _wrappedWidget = DomWidget(
     'div',
     children: [
       _widget,
@@ -334,7 +334,7 @@ final class _NavigatorState extends State<Navigator> {
     lastRouteElement?.style.visibility = 'hidden';
   }
 
-  Future<void> _replaceRouteEntry() async {
+  void _replaceRouteEntry() {
     if (_routeEntries.isNotEmpty) _routeEntries.removeLast();
 
     final routeEntry = _RouteEntry(_build(context));
@@ -351,7 +351,7 @@ final class _NavigatorState extends State<Navigator> {
 
     await _animationFrame;
 
-    await _replaceRouteEntry();
+    _replaceRouteEntry();
   }
 
   Future<void> _pushHistory([final String? path]) async {
@@ -417,7 +417,7 @@ final class _NavigatorState extends State<Navigator> {
   void initialize() async {
     super.initialize();
 
-    await _replaceRouteEntry();
+    _replaceRouteEntry();
 
     Navigator._state = this;
 
