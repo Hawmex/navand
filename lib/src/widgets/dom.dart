@@ -126,6 +126,7 @@ final class Style {
   }
 }
 
+/// A widget that renders an HTML element on the screen.
 final class DomWidget extends Widget {
   final String tag;
   final String? id;
@@ -241,6 +242,7 @@ final class _DomWidgetNode extends _MultiChildNode<DomWidget>
   }
 }
 
+/// A widget that renders a piece of text on the screen.
 final class Text extends Widget {
   final String value;
 
