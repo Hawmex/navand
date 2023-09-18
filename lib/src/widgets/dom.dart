@@ -12,19 +12,19 @@ base mixin _DomNode<T extends Widget> on _Node<T> {
     if (skip) {
       if (node.previous != null) return _findDomNode(node.previous!);
 
-      if (node._parent == null || node._parent == _parentDomWidgetNode) {
-        return null;
+      if (node._parent != null && node._parent != _parentDomWidgetNode) {
+        return _findDomNode(node._parent!, skip: true);
       }
 
-      return _findDomNode(node._parent!, skip: true);
+      return null;
     }
 
     if (node is _SingleChildNode) return _findDomNode(node._child);
 
     if (node is _FragmentNode) {
-      if (node._children.isEmpty) return _findDomNode(node, skip: true);
+      if (node._children.isNotEmpty) return _findDomNode(node._children.last);
 
-      return _findDomNode(node._children.last);
+      return _findDomNode(node, skip: true);
     }
 
     return node as _DomNode;
@@ -157,7 +157,7 @@ final class _DomWidgetNode extends _MultiChildNode<DomWidget>
     with _DomNode<DomWidget> {
   final _eventSubscriptions = <StreamSubscription<html.Event>>{};
 
-  late final html.Element _element = html.Element.tag(_widget.tag);
+  late final _element = html.Element.tag(_widget.tag);
   late final html.Animation? _animation;
 
   _DomWidgetNode(super.widget);
