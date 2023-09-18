@@ -1,3 +1,8 @@
+## 1.0.0-alpha.8
+
+- Improve the internal APIs.
+- Fix a potential bug in `Navigator`.
+
 ## 1.0.0-alpha.7
 
 ### Breaking Changes
