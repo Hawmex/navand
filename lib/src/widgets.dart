@@ -1,4 +1,3 @@
-/// Navand's widgets API.
 library widgets;
 
 import 'dart:async';
@@ -11,8 +10,8 @@ import 'package:js/js.dart';
 import 'animation.dart';
 import 'core.dart';
 
-part 'src/widgets/async.dart';
-part 'src/widgets/base.dart';
-part 'src/widgets/dom.dart';
-part 'src/widgets/navigation.dart';
-part 'src/widgets/state.dart';
+part 'widgets/async.dart';
+part 'widgets/base.dart';
+part 'widgets/dom.dart';
+part 'widgets/navigation.dart';
+part 'widgets/state.dart';
