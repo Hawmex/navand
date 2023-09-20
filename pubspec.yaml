@@ -8,11 +8,12 @@ repository: https://github.com/Hawmex/navand
 executables:
   navand:
 environment:
-  sdk: ^3.0.1
+  sdk: ^3.1.0
 dev_dependencies:
   lints: ^2.1.1
 dependencies:
   args: ^2.4.2
+  io: ^1.0.4
   js: ^0.6.7
   shelf: ^1.4.1
   shelf_proxy: ^1.0.4

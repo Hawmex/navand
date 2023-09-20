@@ -1,6 +1,9 @@
+// ignore_for_file: avoid_print
+
+import 'dart:convert';
 import 'dart:io';
 
-import '../cli_message.dart';
+import '../logger.dart';
 import '../navand_command.dart';
 
 class _File {
@@ -28,12 +31,7 @@ class _Dependency {
   Future<Process> _install() async {
     return await Process.start(
       'dart',
-      [
-        'pub',
-        'add',
-        if (_dev) '-d',
-        _name,
-      ],
+      ['pub', 'add', if (_dev) '-d', _name],
     );
   }
 }
@@ -79,7 +77,7 @@ description: >
   A Navand app.
 publish_to: none
 environment:
-  sdk: ^3.0.1
+  sdk: ^3.1.0
 ''',
     ),
     const _File(
@@ -109,7 +107,7 @@ analyzer:
       path: './web/index.html',
       body: '''
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -122,18 +120,7 @@ analyzer:
       type="image/x-icon"
     />
 
-    <style>
-      /* You can apply global styles here. */
-
-      *,
-      *::before,
-      *::after {
-        margin: 0px;
-        padding: 0px;
-        -webkit-tap-highlight-color: transparent;
-        box-sizing: border-box;
-      }
-    </style>
+    <link rel="stylesheet" href="/styles.css" />
 
     <script src="/main.dart.js" defer></script>
   </head>
@@ -153,7 +140,9 @@ import 'package:$_appName/app.dart';
 void main() => runApp(const App());
 ''',
     ),
-    const _File(path: './web/styles.css', body: '''
+    const _File(
+      path: './web/styles.css',
+      body: '''
 *,
 *::before,
 *::after {
@@ -162,7 +151,8 @@ void main() => runApp(const App());
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
 }
-'''),
+''',
+    ),
     const _File(
       path: './lib/app.dart',
       body: '''
@@ -178,10 +168,6 @@ final class App extends StatelessWidget {
   Widget build(final BuildContext context) {
     return const DomWidget(
       'div',
-      children: [
-        Logo(),
-        Greeting(),
-      ],
       style: Style({
         'display': 'flex',
         'flex-flow': 'column',
@@ -197,6 +183,10 @@ final class App extends StatelessWidget {
         'font-family': 'system-ui',
         'user-select': 'none',
       }),
+      children: [
+        Logo(),
+        Greeting(),
+      ],
     );
   }
 }
@@ -216,14 +206,14 @@ final class Greeting extends StatelessWidget {
       [
         DomWidget(
           'span',
-          children: [
-            Text('Welcome to Navand!'),
-          ],
           style: Style({
             'font-size': '24px',
             'font-weight': 'bold',
             'color': '#00e690',
           }),
+          children: [
+            Text('Welcome to Navand!'),
+          ],
         ),
         DomWidget(
           'div',
@@ -231,13 +221,15 @@ final class Greeting extends StatelessWidget {
             Text('To get started, edit '),
             DomWidget(
               'span',
-              children: [Text('web/main.dart')],
               style: Style({
                 'font-family': 'monospace',
                 'background': '#212121',
                 'border-radius': '4px',
                 'padding': '4px',
               }),
+              children: [
+                Text('web/main.dart'),
+              ],
             ),
             Text(' and save to reload.'),
           ],
@@ -301,79 +293,124 @@ final class Logo extends StatelessWidget {
       usageException('Please specify <app_name>.');
     }
 
+    final regexForAppName = RegExp(r'^([a-z]){1}([a-z]|[0-9]|_){0,}$');
+
+    if (!regexForAppName.hasMatch(_appName)) {
+      usageException(
+        '<app_name> can only include lowercase letters, digits, and '
+        'underscores.\nIt can only start with a lowercase letter.',
+      );
+    }
+
     final directory = Directory('./$_appName');
 
     if (await directory.exists()) {
       usageException('Directory "$_appName" already exists.');
     }
 
-    await CliMessage(
-      'Setting up $_appName',
+    await logTask(
       task: () async {
-        await directory.create();
-
-        Directory.current = directory;
-
-        await _createFiles();
-        await _installDependencies();
+        try {
+          await _createDirectory(directory);
+          await _createFiles();
+          await _installDependencies();
+        } catch (e, st) {
+          Directory.current = Directory.current.parent;
+          await directory.delete(recursive: true);
+          Error.throwWithStackTrace(e, st);
+        }
       },
-    ).send();
+      message: 'Setting up $_appName',
+      source: LogSource.navand,
+      showProgress: false,
+    );
 
-    await CliMessage(
+    print(
       'Run the following commands:\n'
       '\tcd $_appName\n'
       '\twebdev serve',
-    ).send();
+    );
 
     exit(0);
   }
 
+  Future<void> _createDirectory(final Directory directory) async {
+    await logTask(
+      task: () async {
+        await directory.create();
+
+        Directory.current = directory;
+      },
+      message: 'Creating $_appName directory',
+      source: LogSource.navand,
+    );
+  }
+
   Future<void> _createFiles() async {
-    await CliMessage(
-      'Creating files',
+    await logTask(
       task: () async {
         for (final file in _files) {
-          await CliMessage(
-            'Creating ${file._path}',
+          await logTask(
             task: () async => await file._create(),
-          ).send();
+            message: 'Creating ${file._path}',
+            source: LogSource.navand,
+            endWithLineBreak: false,
+          );
         }
       },
-    ).send();
+      message: 'Creating files',
+      source: LogSource.navand,
+      showProgress: false,
+    );
   }
 
   Future<void> _installDependencies() async {
-    await CliMessage(
-      'Installing dependencies',
+    await logTask(
       task: () async {
         for (final dependency in _dependencies) {
-          await CliMessage(
-            'Installing ${dependency._name}',
+          await logTask(
             task: () async {
               final process = await dependency._install();
 
               addProcess(process);
 
-              await process.exitCode;
+              if (await process.exitCode > 0) {
+                throw utf8.decode(await process.stderr.first);
+              }
             },
-          ).send();
+            message: 'Installing ${dependency._name}',
+            source: LogSource.pub,
+            endWithLineBreak: false,
+          );
         }
       },
-    ).send();
+      message: 'Installing dependencies',
+      source: LogSource.navand,
+      showProgress: false,
+    );
 
-    await CliMessage(
-      'Installing dev dependencies',
+    await logTask(
       task: () async {
         for (final devDependency in _devDependencies) {
-          await CliMessage('Installing ${devDependency._name}', task: () async {
-            final process = await devDependency._install();
+          await logTask(
+            task: () async {
+              final process = await devDependency._install();
 
-            addProcess(process);
+              addProcess(process);
 
-            await process.exitCode;
-          }).send();
+              if (await process.exitCode > 0) {
+                throw utf8.decode(await process.stderr.first);
+              }
+            },
+            message: 'Installing ${devDependency._name}',
+            source: LogSource.pub,
+            endWithLineBreak: false,
+          );
         }
       },
-    ).send();
+      message: 'Installing dev dependencies',
+      source: LogSource.navand,
+      showProgress: false,
+    );
   }
 }

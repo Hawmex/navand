@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 
-import 'cli_message.dart';
 import 'commands/build_command.dart';
 import 'commands/create_command.dart';
 import 'commands/serve_command.dart';
@@ -33,7 +32,7 @@ final class NavandCommandRunner extends CommandRunner<void> {
       print('${e.message}\n\n${e.usage}');
       exit(1);
     } catch (e, st) {
-      print('$e\n\n$st');
+      print('\n$e\n\n$st');
       exit(1);
     }
   }
@@ -43,8 +42,7 @@ final class NavandCommandRunner extends CommandRunner<void> {
     final shouldPrintVersion = topLevelResults['version'] as bool;
 
     if (shouldPrintVersion) {
-      await const CliMessage('Navand version: $packageVersion').send();
-
+      print('Navand version: $packageVersion');
       exit(0);
     }
 

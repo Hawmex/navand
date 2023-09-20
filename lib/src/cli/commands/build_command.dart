@@ -1,6 +1,8 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
-import '../cli_message.dart';
+import '../logger.dart';
 import '../navand_command.dart';
 
 final class BuildCommand extends NavandCommand {
@@ -17,29 +19,31 @@ final class BuildCommand extends NavandCommand {
   Future<void> run() async {
     super.run();
 
-    await const CliMessage('Starting build_runner.').send();
+    await logTask(
+      task: () async {
+        final process = await Process.start(
+          'dart',
+          [
+            'run',
+            'build_runner',
+            'build',
+            '-r',
+            '-o',
+            'web:build',
+          ],
+          mode: ProcessStartMode.inheritStdio,
+        );
 
-    try {
-      final process = await Process.start(
-        'dart',
-        [
-          'run',
-          'build_runner',
-          'build',
-          '-r',
-          '-o',
-          'web:build',
-        ],
-        mode: ProcessStartMode.inheritStdio,
-      );
+        addProcess(process);
 
-      addProcess(process);
+        if (await process.exitCode > 0) {
+          throw '';
+        }
+      },
+      message: 'Building for production',
+      source: LogSource.buildRunner,
+    );
 
-      await process.exitCode;
-
-      exit(exitCode);
-
-      // ignore: empty_catches
-    } catch (e) {}
+    exit(0);
   }
 }

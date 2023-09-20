@@ -4,7 +4,7 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_proxy/shelf_proxy.dart' as shelf_proxy;
 
-import '../cli_message.dart';
+import '../logger.dart';
 import '../navand_command.dart';
 
 final class ServeCommand extends NavandCommand {
@@ -42,41 +42,41 @@ final class ServeCommand extends NavandCommand {
     const buildRunnerPort = 3000;
     const proxyPort = 3001;
 
-    await const CliMessage(
-      'Starting build_runner at http://$hostname:$buildRunnerPort',
-    ).send();
+    await logTask(
+      task: () async {
+        final process = await Process.start(
+          'dart',
+          [
+            'run',
+            'build_runner',
+            'serve',
+            'web:$buildRunnerPort',
+            '--hostname',
+            hostname,
+          ],
+          mode: ProcessStartMode.inheritStdio,
+        );
 
-    try {
-      final process = await Process.start(
-        'dart',
-        [
-          'run',
-          'build_runner',
-          'serve',
-          'web:$buildRunnerPort',
-          '--hostname',
-          hostname,
-        ],
-        mode: ProcessStartMode.inheritStdio,
-      );
+        addProcess(process);
+      },
+      message: 'Starting build_runner at http://$hostname:$buildRunnerPort',
+      source: LogSource.navand,
+    );
 
-      addProcess(process);
+    await logTask(
+      task: () async {
+        final localhostProxyHandler =
+            shelf_proxy.proxyHandler('http://$hostname:$buildRunnerPort');
 
-      // ignore: empty_catches
-    } catch (e) {}
+        final cascade = shelf.Cascade()
+            .add(localhostProxyHandler)
+            .add(_proxyRootIndexHandler(localhostProxyHandler));
 
-    await const CliMessage(
-      'Starting the proxy server at http://$hostname:$proxyPort',
-    ).send();
-
-    final localhostProxyHandler =
-        shelf_proxy.proxyHandler('http://$hostname:$buildRunnerPort');
-
-    final cascade = shelf.Cascade()
-        .add(localhostProxyHandler)
-        .add(_proxyRootIndexHandler(localhostProxyHandler));
-
-    _server = await shelf_io.serve(cascade.handler, hostname, proxyPort);
+        _server = await shelf_io.serve(cascade.handler, hostname, proxyPort);
+      },
+      message: 'Starting the proxy server at http://$hostname:$proxyPort',
+      source: LogSource.navand,
+    );
   }
 
   @override
