@@ -9,14 +9,14 @@ final class Greeting extends StatelessWidget {
       [
         DomWidget(
           'span',
-          children: [
-            Text('Welcome to Navand!'),
-          ],
           style: Style({
             'font-size': '24px',
             'font-weight': 'bold',
             'color': '#00e690',
           }),
+          children: [
+            Text('Welcome to Navand!'),
+          ],
         ),
         DomWidget(
           'div',
@@ -24,13 +24,15 @@ final class Greeting extends StatelessWidget {
             Text('To get started, edit '),
             DomWidget(
               'span',
-              children: [Text('web/main.dart')],
               style: Style({
                 'font-family': 'monospace',
                 'background': '#212121',
                 'border-radius': '4px',
                 'padding': '4px',
               }),
+              children: [
+                Text('web/main.dart'),
+              ],
             ),
             Text(' and save to reload.'),
           ],

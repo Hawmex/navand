@@ -3,7 +3,7 @@ description: >
   A Navand app.
 publish_to: none
 environment:
-  sdk: ^3.0.1
+  sdk: ^3.1.0
 dependencies:
   navand:
     path: ../

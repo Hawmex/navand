@@ -10,10 +10,6 @@ final class App extends StatelessWidget {
   Widget build(final BuildContext context) {
     return const DomWidget(
       'div',
-      children: [
-        Logo(),
-        Greeting(),
-      ],
       style: Style({
         'display': 'flex',
         'flex-flow': 'column',
@@ -29,6 +25,10 @@ final class App extends StatelessWidget {
         'font-family': 'system-ui',
         'user-select': 'none',
       }),
+      children: [
+        Logo(),
+        Greeting(),
+      ],
     );
   }
 }
