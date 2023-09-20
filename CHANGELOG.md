@@ -1,3 +1,10 @@
+## 1.0.0-alpha.10
+
+- Improve CLI.
+- Update example.
+- Update application template.
+- Update SDK version constraint.
+
 ## 1.0.0-alpha.9
 
 - Add docs for `DomWidget` and `Text`.
