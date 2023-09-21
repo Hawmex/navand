@@ -1,3 +1,7 @@
+## 1.0.0-alpha.12
+
+- Handle the bug in the navigation API when an app goes through hot restart.
+
 ## 1.0.0-alpha.11
 
 - Move the command-line tool to a separate package named `navand_cli`.
