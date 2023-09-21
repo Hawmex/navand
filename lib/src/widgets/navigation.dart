@@ -262,13 +262,11 @@ final class _NavigatorState extends State<Navigator> {
   html.Animation? _currentAnimation;
 
   Future<void> get _animationFrame async {
-    final controller = StreamController<void>.broadcast();
+    final completer = Completer<void>();
 
-    Timer(const Duration(milliseconds: 16), () {
-      controller.add(null);
-    });
+    Timer(const Duration(milliseconds: 16), completer.complete);
 
-    await controller.stream.first;
+    await completer.future;
   }
 
   Future<void> _popAllModalPoppers() async {
@@ -375,16 +373,16 @@ final class _NavigatorState extends State<Navigator> {
 
     html.window.history.back();
 
-    final controller = StreamController<void>.broadcast();
+    final completer = Completer<void>();
 
     late final StreamSubscription<void> subscription;
 
     subscription = _popWaiter.stream.listen((final event) {
-      controller.add(null);
+      completer.complete();
       subscription.cancel();
     });
 
-    await controller.stream.first;
+    await completer.future;
   }
 
   Future<void> _replaceRoute(final String path) async {
