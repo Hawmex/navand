@@ -1,3 +1,8 @@
+## 1.0.0-alpha.11
+
+- Move the command-line tool to a separate package named `navand_cli`.
+- Improve internal codes.
+
 ## 1.0.0-alpha.10
 
 - Improve CLI.
