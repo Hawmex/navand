@@ -9,8 +9,9 @@ external _Node? _appNode;
 /// feature has been blocked by Dart's limitations. See
 /// https://github.com/flutter/flutter/issues/53041
 void runApp(final Widget app) {
-  // ignore: avoid_print
-  print(r'''
+  if (_appNode == null) {
+    // ignore: avoid_print
+    print(r'''
   _   _                            _ 
  | \ | |                          | |
  |  \| | __ ___   ____ _ _ __   __| |
@@ -20,7 +21,8 @@ void runApp(final Widget app) {
                                                        
 ''');
 
-  _addBackEventScript();
+    _addBackEventScript();
+  }
 
   if (_appNode != null && app.matches(_appNode!._widget)) {
     _appNode!._widget = app;
