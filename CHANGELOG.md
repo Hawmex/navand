@@ -1,3 +1,7 @@
+## 1.0.0-alpha.13
+
+- Update the example.
+
 ## 1.0.0-alpha.12
 
 - Handle the bug in the navigation API when an app goes through hot restart.
