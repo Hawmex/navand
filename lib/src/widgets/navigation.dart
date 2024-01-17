@@ -1,4 +1,4 @@
-part of widgets;
+part of '../widgets.dart';
 
 const _script = r'''
 let currentIndex = history.state?.index ?? 0;

@@ -1,4 +1,4 @@
-part of animation;
+part of '../animation.dart';
 
 /// Similar to `animation-fill-mode` in CSS and JS animations.
 enum AnimationFillMode {

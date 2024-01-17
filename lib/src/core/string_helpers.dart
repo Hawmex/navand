@@ -1,4 +1,4 @@
-part of core;
+part of '../core.dart';
 
 /// Adds some utilities to transform strings.
 extension StringHelpers on String {

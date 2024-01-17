@@ -1,4 +1,4 @@
-part of animation;
+part of '../animation.dart';
 
 /// An implementation of the `cubic-bezier` curves.
 ///

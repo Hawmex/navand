@@ -1,4 +1,4 @@
-part of core;
+part of '../core.dart';
 
 /// Debounces multiple tasks by running only the last one using
 /// [scheduleMicrotask].

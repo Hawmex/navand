@@ -1,4 +1,4 @@
-part of widgets;
+part of '../widgets.dart';
 
 /// A [Widget] that has a mutable state.
 abstract base class StatefulWidget extends Widget {

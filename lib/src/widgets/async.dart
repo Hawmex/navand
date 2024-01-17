@@ -1,4 +1,4 @@
-part of widgets;
+part of '../widgets.dart';
 
 /// The connection state of an [AsyncSnapshot].
 enum ConnectionState {

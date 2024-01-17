@@ -1,4 +1,4 @@
-part of animation;
+part of '../animation.dart';
 
 /// Similar to keyframes in CSS and JS animations.
 ///

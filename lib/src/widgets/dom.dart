@@ -1,4 +1,4 @@
-part of widgets;
+part of '../widgets.dart';
 
 base mixin _DomNode<T extends Widget> on _Node<T> {
   late final _parentDomWidgetNode = _Node._getAncestorWhere(
@@ -13,7 +13,7 @@ base mixin _DomNode<T extends Widget> on _Node<T> {
       if (node.previous != null) return _findDomNode(node.previous!);
 
       if (node._parent != null && node._parent != _parentDomWidgetNode) {
-        return _findDomNode(node._parent!, skip: true);
+        return _findDomNode(node._parent, skip: true);
       }
 
       return null;

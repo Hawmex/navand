@@ -1,4 +1,4 @@
-part of widgets;
+part of '../widgets.dart';
 
 @JS('__navandAppNode__')
 external _Node? _appNode;
@@ -104,9 +104,9 @@ sealed class _Node<T extends Widget> extends LinkedListEntry<_Node> {
     final bool Function(_Node ancestor) test,
   ) {
     if (node._parent == null) return null;
-    if (test(node._parent!)) return node._parent;
+    if (test(node._parent)) return node._parent;
 
-    return _getAncestorWhere(node._parent!, test);
+    return _getAncestorWhere(node._parent, test);
   }
 
   bool _isActive = false;

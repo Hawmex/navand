@@ -1,4 +1,4 @@
-part of animation;
+part of '../animation.dart';
 
 /// This class can be used to add animations to a [DomWidget].
 ///
