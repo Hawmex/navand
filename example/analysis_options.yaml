@@ -1,5 +1,4 @@
 include: package:lints/recommended.yaml
-
 linter:
   rules:
     prefer_const_constructors: true
@@ -10,7 +9,6 @@ linter:
     prefer_relative_imports: true
     avoid_print: true
     comment_references: true
-
 analyzer:
   language:
     strict-casts: true
