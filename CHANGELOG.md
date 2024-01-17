@@ -1,3 +1,7 @@
+## 1.0.1
+
+- Fixed a bug caused by upgrading `js`.
+
 ## 1.0.0
 
 - Internal improvements.
