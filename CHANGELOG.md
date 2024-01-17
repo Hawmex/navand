@@ -1,3 +1,9 @@
+## 1.0.0
+
+- Internal improvements.
+- Updated SDK Constraint.
+- Stable Release.
+
 ## 1.0.0-alpha.13
 
 - Update the example.
